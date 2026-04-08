@@ -10,54 +10,40 @@ export default async function handler(req, res) {
 
   const { endpoint, since, until, id } = req.query;
   const BASE = 'https://graph.facebook.com/v19.0';
-
-  // Campos de insight válidos
   const insightFields = 'spend,impressions,clicks,reach,frequency,ctr,cpm,cpc,actions,cost_per_action_type';
 
-  // Monta time_range encodado corretamente
-  const timeRange = since && until
-    ? `time_range=%7B%22since%22%3A%22${since}%22%2C%22until%22%3A%22${until}%22%7D`
-    : 'date_preset=last_30d';
+  const timeParam = since && until
+    ? `&time_range=${encodeURIComponent(JSON.stringify({ since, until }))}`
+    : '&date_preset=last_30d';
 
   try {
     let url = '';
 
-    if (endpoint === 'campaigns') {
-      // Busca campanhas com insights separados (mais confiável)
-      url = `${BASE}/${AD_ACCOUNT}/campaigns?fields=id,name,status,objective&limit=50&access_token=${TOKEN}`;
-    }
-    else if (endpoint === 'campaign_insights') {
-      // Insights de uma campanha específica ou de todas
-      const parent = id || AD_ACCOUNT;
-      const level = id ? '' : '&level=campaign';
-      url = `${BASE}/${parent}/insights?fields=${insightFields}&${timeRange}${level}&limit=50&access_token=${TOKEN}`;
-    }
-    else if (endpoint === 'adsets') {
-      url = `${BASE}/${id}/adsets?fields=id,name,status&limit=50&access_token=${TOKEN}`;
-    }
-    else if (endpoint === 'adset_insights') {
-      url = `${BASE}/${id}/insights?fields=${insightFields}&${timeRange}&limit=50&access_token=${TOKEN}`;
-    }
-    else if (endpoint === 'ads') {
-      url = `${BASE}/${id}/ads?fields=id,name,status,creative{id,name,thumbnail_url,image_url}&limit=50&access_token=${TOKEN}`;
-    }
-    else if (endpoint === 'ad_insights') {
-      url = `${BASE}/${id}/insights?fields=${insightFields}&${timeRange}&limit=50&access_token=${TOKEN}`;
-    }
-    else if (endpoint === 'account_insights') {
-      url = `${BASE}/${AD_ACCOUNT}/insights?fields=${insightFields}&${timeRange}&access_token=${TOKEN}`;
-    }
-    else if (endpoint === 'daily') {
-      // Série temporal dia a dia
-      const parent = id || AD_ACCOUNT;
-      url = `${BASE}/${parent}/insights?fields=spend,impressions,clicks,ctr,cpc,actions&time_increment=1&${timeRange}&limit=90&access_token=${TOKEN}`;
-    }
-    else if (endpoint === 'all_campaigns_insights') {
-      // Insights de todas as campanhas no período — chamada única mais eficiente
-      url = `${BASE}/${AD_ACCOUNT}/insights?fields=${insightFields},campaign_name,campaign_id&level=campaign&${timeRange}&limit=50&access_token=${TOKEN}`;
-    }
-    else {
-      return res.status(400).json({ error: 'Endpoint inválido.' });
+    switch (endpoint) {
+      case 'campaigns':
+        url = `${BASE}/${AD_ACCOUNT}/campaigns?fields=id,name,status,objective&limit=50&access_token=${TOKEN}`;
+        break;
+
+      case 'all_campaigns_insights':
+        url = `${BASE}/${AD_ACCOUNT}/insights?fields=${insightFields},campaign_name,campaign_id&level=campaign&limit=50${timeParam}&access_token=${TOKEN}`;
+        break;
+
+      case 'daily':
+        url = `${BASE}/${AD_ACCOUNT}/insights?fields=spend,impressions,clicks,ctr,actions&time_increment=1&limit=90${timeParam}&access_token=${TOKEN}`;
+        break;
+
+      case 'ads':
+        if (!id) return res.status(400).json({ error: 'Parâmetro id obrigatório para ads.' });
+        url = `${BASE}/${id}/ads?fields=id,name,status,creative{id,name,thumbnail_url,image_url}&limit=50&access_token=${TOKEN}`;
+        break;
+
+      case 'ad_insights':
+        if (!id) return res.status(400).json({ error: 'Parâmetro id obrigatório para ad_insights.' });
+        url = `${BASE}/${id}/insights?fields=${insightFields}&limit=1${timeParam}&access_token=${TOKEN}`;
+        break;
+
+      default:
+        return res.status(400).json({ error: `Endpoint inválido: "${endpoint}". Verifique o frontend.` });
     }
 
     const response = await fetch(url);
