@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meta Ads · Método Prepara</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
 <style>
 /* ═══════════════════════════════════════════════
    DESIGN TOKENS
@@ -84,7 +85,8 @@ body::after {
   background: #000;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  transition: opacity .7s ease, visibility .7s ease;
+  transition: opacity .6s ease, visibility .6s ease;
+  cursor: pointer;
 }
 #splash.out { opacity: 0; visibility: hidden; pointer-events: none }
 
@@ -1697,18 +1699,29 @@ function showError(msg) {
 /* ══════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════ */
-window.addEventListener('load',()=>{
-  setTimeout(()=>document.getElementById('splash').classList.add('out'),2200);
+function dismissSplash() {
+  const s = document.getElementById('splash');
+  if (s) s.classList.add('out');
+}
+
+// Dismiss splash as soon as DOM is ready — não espera fontes/imagens externas
+// Fallback absoluto: força saída em 1.5s mesmo que algo trave
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(dismissSplash, 1500);
+
+  // Clique na splash também a dispensa (útil se algo travar)
+  document.getElementById('splash')?.addEventListener('click', dismissSplash);
+
+  // Init UI
+  document.getElementById('periodTriggerLabel').textContent = presetNames[S.preset] || S.preset;
+  document.querySelector(`.pm-item[data-preset="${S.preset}"]`)?.classList.add('active');
+
+  loadAll();
+  setInterval(loadAll, 30 * 60 * 1000);
 });
 
-document.addEventListener('DOMContentLoaded',()=>{
-  // Set default preset label
-  document.getElementById('periodTriggerLabel').textContent = presetNames[S.preset] || S.preset;
-  // Mark default active
-  document.querySelector(`.pm-item[data-preset="${S.preset}"]`)?.classList.add('active');
-  loadAll();
-  setInterval(loadAll,30*60*1000);
-});
+// Fallback extra: se load demorar muito (fonte externa bloqueada), sai em 3s
+setTimeout(dismissSplash, 3000);
 </script>
 </body>
 </html>
