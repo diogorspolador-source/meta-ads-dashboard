@@ -224,34 +224,135 @@ body::after {
 .bc-sep { color: var(--t2) }
 
 .topbar-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
-.period-group {
-  display: flex; gap: 1px;
-  background: var(--bg3); border: 1px solid var(--b0);
-  border-radius: var(--r-sm); padding: 2px;
-}
-.period-btn {
-  padding: 4px 12px; border-radius: 5px;
-  font-size: 11px; font-weight: 700; color: var(--t2);
-  background: transparent; border: none; cursor: pointer;
-  font-family: 'Outfit', sans-serif; transition: all .12s;
-}
-.period-btn:hover { color: var(--t0) }
-.period-btn.active { background: var(--brand); color: #fff }
-
-.custom-picker {
-  display: none; align-items: center; gap: 7px;
+/* ── Period dropdown ── */
+.period-dropdown { position: relative; flex-shrink: 0 }
+.period-trigger {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px; border-radius: var(--r-sm);
   background: var(--bg3); border: 1px solid var(--b1);
-  border-radius: var(--r-sm); padding: 4px 10px;
+  font-size: 12px; font-weight: 600; color: var(--t0);
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+  transition: all .12s; user-select: none; white-space: nowrap;
 }
-.custom-picker label { font-size: 10px; font-weight: 700; color: var(--t2) }
-.custom-picker input[type=date] {
+.period-trigger:hover { border-color: var(--b2) }
+.period-trigger.open { border-color: var(--brand) }
+.period-trigger .pt-icon { font-size: 10px; color: var(--t2); transition: transform .15s }
+.period-trigger.open .pt-icon { transform: rotate(180deg) }
+
+.period-menu {
+  display: none; position: absolute; top: calc(100% + 6px); right: 0;
   background: var(--bg2); border: 1px solid var(--b1);
-  border-radius: 5px; color: var(--t0);
+  border-radius: var(--r); min-width: 210px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  z-index: 200; overflow: hidden;
+  animation: menuIn .15s ease both;
+}
+.period-menu.open { display: block }
+@keyframes menuIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
+
+.pm-section { padding: 6px 6px 4px; border-bottom: 1px solid var(--b0) }
+.pm-section:last-child { border-bottom: none }
+.pm-section-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--t2);
+  padding: 4px 8px 6px;
+}
+.pm-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px; border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 500; color: var(--t1);
+  cursor: pointer; transition: all .1s;
+}
+.pm-item:hover { background: rgba(255,255,255,.05); color: var(--t0) }
+.pm-item.active { color: var(--brand); background: var(--brand-lt) }
+.pm-item .pm-range { font-size: 10px; color: var(--t2); font-family: 'DM Mono', monospace }
+.pm-item.active .pm-range { color: var(--brand) }
+
+.pm-custom { padding: 8px 8px 10px }
+.pm-custom-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px }
+.pm-custom-row label { font-size: 10px; font-weight: 700; color: var(--t2); width: 22px; flex-shrink: 0 }
+.pm-custom-row input[type=date] {
+  flex: 1; background: var(--bg3); border: 1px solid var(--b1);
+  border-radius: var(--r-sm); color: var(--t0);
   font-family: 'DM Mono', monospace; font-size: 11px;
-  padding: 3px 7px; outline: none; cursor: pointer;
+  padding: 5px 8px; outline: none; cursor: pointer;
   color-scheme: dark;
 }
-.custom-picker input[type=date]:focus { border-color: var(--brand) }
+.pm-custom-row input[type=date]:focus { border-color: var(--brand) }
+
+/* ── Campaign filter ── */
+.camp-filter { position: relative; flex-shrink: 0 }
+.camp-trigger {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px; border-radius: var(--r-sm);
+  background: var(--bg3); border: 1px solid var(--b1);
+  font-size: 12px; font-weight: 600; color: var(--t0);
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+  transition: all .12s; user-select: none;
+  max-width: 200px;
+}
+.camp-trigger:hover { border-color: var(--b2) }
+.camp-trigger.open { border-color: var(--brand) }
+.camp-trigger.filtered { border-color: var(--brand); color: #ff8050; background: var(--brand-lt) }
+.camp-trigger .ct-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 }
+.camp-trigger .ct-icon { font-size: 10px; color: var(--t2); flex-shrink: 0; transition: transform .15s }
+.camp-trigger.open .ct-icon { transform: rotate(180deg) }
+.camp-trigger .ct-clear {
+  font-size: 13px; line-height: 1; color: var(--t2); flex-shrink: 0;
+  padding: 0 2px; cursor: pointer;
+}
+.camp-trigger .ct-clear:hover { color: var(--red) }
+
+.camp-menu {
+  display: none; position: absolute; top: calc(100% + 6px); right: 0;
+  background: var(--bg2); border: 1px solid var(--b1);
+  border-radius: var(--r); width: 280px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  z-index: 200; overflow: hidden;
+  animation: menuIn .15s ease both;
+}
+.camp-menu.open { display: block }
+.camp-search {
+  padding: 8px 8px 0;
+  border-bottom: 1px solid var(--b0);
+  padding-bottom: 8px;
+}
+.camp-search input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--b1);
+  border-radius: var(--r-sm); color: var(--t0);
+  font-family: 'Outfit', sans-serif; font-size: 12px;
+  padding: 7px 10px; outline: none;
+}
+.camp-search input:focus { border-color: var(--brand) }
+.camp-search input::placeholder { color: var(--t2) }
+.camp-list { max-height: 220px; overflow-y: auto; padding: 4px 6px 6px }
+.camp-list::-webkit-scrollbar { width: 4px }
+.camp-list::-webkit-scrollbar-track { background: transparent }
+.camp-list::-webkit-scrollbar-thumb { background: var(--b1); border-radius: 2px }
+.camp-opt {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px; border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 500; color: var(--t1);
+  cursor: pointer; transition: all .1s;
+}
+.camp-opt:hover { background: rgba(255,255,255,.05); color: var(--t0) }
+.camp-opt.active { color: var(--brand); background: var(--brand-lt) }
+.camp-opt-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0 }
+.camp-opt-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 }
+.camp-opt-chk { font-size: 11px; flex-shrink: 0; opacity: 0 }
+.camp-opt.active .camp-opt-chk { opacity: 1 }
+.camp-all {
+  padding: 8px 6px 4px; border-bottom: 1px solid var(--b0);
+  margin-bottom: 4px;
+}
+.camp-all-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 8px; border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 700; color: var(--t2);
+  cursor: pointer; transition: all .1s;
+  letter-spacing: .5px; text-transform: uppercase;
+}
+.camp-all-btn:hover { color: var(--t0); background: rgba(255,255,255,.04) }
 
 .btn {
   display: inline-flex; align-items: center; gap: 5px;
@@ -623,20 +724,54 @@ th.sorted .sort-icon { opacity: 1 }
       <span class="bc cur">Visão Geral</span>
     </div>
     <div class="topbar-r">
-      <div class="period-group">
-        <button class="period-btn" data-days="7">7d</button>
-        <button class="period-btn active" data-days="14">14d</button>
-        <button class="period-btn" data-days="30">30d</button>
-        <button class="period-btn" data-days="60">60d</button>
-        <button class="period-btn" data-days="90">90d</button>
-        <button class="period-btn" data-days="custom">Custom</button>
+
+      <!-- CAMPAIGN FILTER -->
+      <div class="camp-filter" id="campFilter">
+        <div class="camp-trigger" id="campTrigger" onclick="toggleCampMenu()">
+          <span class="ct-label" id="campTriggerLabel">Todas as campanhas</span>
+          <span class="ct-clear" id="campClearBtn" onclick="clearCampFilter(event)" style="display:none" title="Limpar filtro">×</span>
+          <span class="ct-icon">▾</span>
+        </div>
+        <div class="camp-menu" id="campMenu">
+          <div class="camp-search"><input type="text" id="campSearch" placeholder="Buscar campanha..." oninput="filterCampOpts(this.value)"></div>
+          <div class="camp-all"><div class="camp-all-btn" onclick="clearCampFilter()">✕ Todas as campanhas</div></div>
+          <div class="camp-list" id="campList"></div>
+        </div>
       </div>
-      <div class="custom-picker" id="cpicker">
-        <label>DE</label><input type="date" id="date-since">
-        <label>ATÉ</label><input type="date" id="date-until">
-        <button class="btn btn-primary btn-sm" onclick="applyCustom()">OK</button>
+
+      <!-- PERIOD DROPDOWN -->
+      <div class="period-dropdown" id="periodDropdown">
+        <div class="period-trigger" id="periodTrigger" onclick="togglePeriodMenu()">
+          <span id="periodTriggerLabel">Últimos 14 dias</span>
+          <span class="pt-icon">▾</span>
+        </div>
+        <div class="period-menu" id="periodMenu">
+          <div class="pm-section">
+            <div class="pm-section-label">Dias relativos</div>
+            <div class="pm-item active" data-preset="today"    onclick="setPreset('today')">   <span>Hoje</span>          <span class="pm-range" id="pr-today"></span></div>
+            <div class="pm-item"        data-preset="yesterday" onclick="setPreset('yesterday')"><span>Ontem</span>         <span class="pm-range" id="pr-yesterday"></span></div>
+            <div class="pm-item"        data-preset="last7"    onclick="setPreset('last7')">   <span>Últimos 7 dias</span> <span class="pm-range" id="pr-last7"></span></div>
+            <div class="pm-item"        data-preset="last14"   onclick="setPreset('last14')">  <span>Últimos 14 dias</span><span class="pm-range" id="pr-last14"></span></div>
+            <div class="pm-item"        data-preset="last30"   onclick="setPreset('last30')">  <span>Últimos 30 dias</span><span class="pm-range" id="pr-last30"></span></div>
+          </div>
+          <div class="pm-section">
+            <div class="pm-section-label">Meses</div>
+            <div class="pm-item" data-preset="thismonth"  onclick="setPreset('thismonth')"> <span>Este mês</span>   <span class="pm-range" id="pr-thismonth"></span></div>
+            <div class="pm-item" data-preset="lastmonth"  onclick="setPreset('lastmonth')"> <span>Mês passado</span><span class="pm-range" id="pr-lastmonth"></span></div>
+            <div class="pm-item" data-preset="lastyear"   onclick="setPreset('lastyear')">  <span>Ano passado</span><span class="pm-range" id="pr-lastyear"></span></div>
+          </div>
+          <div class="pm-section">
+            <div class="pm-section-label">Personalizado</div>
+            <div class="pm-custom">
+              <div class="pm-custom-row"><label>De</label><input type="date" id="date-since" onchange="checkCustomDates()"></div>
+              <div class="pm-custom-row"><label>Até</label><input type="date" id="date-until" onchange="checkCustomDates()"></div>
+              <button class="btn btn-primary btn-sm" style="width:100%;margin-top:4px;justify-content:center" onclick="applyCustom()">Aplicar período</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <button class="btn btn-ghost" onclick="loadAll()">↺ Atualizar</button>
+
+      <button class="btn btn-ghost" onclick="loadAll()">↺</button>
     </div>
   </div>
 
@@ -650,7 +785,8 @@ th.sorted .sort-icon { opacity: 1 }
    STATE
 ══════════════════════════════════════════════ */
 const S = {
-  period:14, customSince:null, customUntil:null,
+  preset:'last14', customSince:null, customUntil:null,
+  campFilterId: null, campFilterName: null,
   view:'overview',
   campaigns:[], allInsights:[], prevInsights:[],
   campMap:{}, prevCampMap:{}, daily:[],
@@ -722,7 +858,15 @@ function getResultsAny(ins) {
   return ins.actions.reduce((s,a)=>s+parseInt(a.value||0),0);
 }
 
-function agg(items) {
+function filteredInsights() {
+  if (!S.campFilterId) return S.allInsights;
+  return S.allInsights.filter(i => i.campaign_id === S.campFilterId);
+}
+
+function filteredPrevInsights() {
+  if (!S.campFilterId) return S.prevInsights;
+  return S.prevInsights.filter(i => i.campaign_id === S.campFilterId);
+}
   let spend=0,impressions=0,clicks=0,reach=0,results=0,ctrS=0,cpcS=0,cpmS=0,freqS=0,n=0;
   items.forEach(ins=>{
     spend+=parseFloat(ins.spend||0); impressions+=parseInt(ins.impressions||0);
@@ -744,30 +888,220 @@ function deltaHTML(c,p,inv=false) {
   return `<span class="delta ${cls}">${arr} ${d>0?'+':''}${d.toFixed(1)}%</span>`;
 }
 
-/* ── dates ── */
-function getDates(days,offset=0) {
-  if(S.customSince&&S.customUntil&&offset===0) return {since:S.customSince,until:S.customUntil};
-  const until=new Date(); until.setDate(until.getDate()-offset*days);
-  const since=new Date(until); since.setDate(since.getDate()-days);
-  if(offset>0) until.setDate(until.getDate()-1);
-  const fmt=d=>d.toISOString().split('T')[0];
-  return {since:fmt(since),until:fmt(until)};
+/* ── date helpers ── */
+const fmt = d => d.toISOString().split('T')[0];
+
+function presetDates(preset) {
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+  switch(preset) {
+    case 'today':
+      return { since: fmt(now), until: fmt(now) };
+    case 'yesterday': {
+      const yd = new Date(y, m, d-1);
+      return { since: fmt(yd), until: fmt(yd) };
+    }
+    case 'last7': {
+      const s = new Date(y, m, d-6);
+      return { since: fmt(s), until: fmt(now) };
+    }
+    case 'last14': {
+      const s = new Date(y, m, d-13);
+      return { since: fmt(s), until: fmt(now) };
+    }
+    case 'last30': {
+      const s = new Date(y, m, d-29);
+      return { since: fmt(s), until: fmt(now) };
+    }
+    case 'thismonth': {
+      const s = new Date(y, m, 1);
+      return { since: fmt(s), until: fmt(now) };
+    }
+    case 'lastmonth': {
+      const s = new Date(y, m-1, 1);
+      const u = new Date(y, m, 0);
+      return { since: fmt(s), until: fmt(u) };
+    }
+    case 'lastyear': {
+      const s = new Date(y-1, 0, 1);
+      const u = new Date(y-1, 11, 31);
+      return { since: fmt(s), until: fmt(u) };
+    }
+    case 'custom':
+      return { since: S.customSince, until: S.customUntil };
+    default: {
+      const s = new Date(y, m, d-13);
+      return { since: fmt(s), until: fmt(now) };
+    }
+  }
 }
 
-async function apiFetch(endpoint,extra={}) {
-  const dates=extra.since?{since:extra.since,until:extra.until}:getDates(S.period);
-  const p=new URLSearchParams({endpoint,...dates,...extra});
-  const res=await fetch(`${API}?${p}`);
-  const json=await res.json();
-  if(json.error) throw new Error(json.error);
+function prevPeriodDates(preset) {
+  // Returns the equivalent previous period for delta comparison
+  const { since, until } = presetDates(preset);
+  if (!since || !until) return null;
+  const diffMs = new Date(until) - new Date(since);
+  const diffDays = Math.round(diffMs / 86400000) + 1;
+  const prevUntil = new Date(new Date(since) - 86400000);
+  const prevSince = new Date(prevUntil - (diffDays - 1) * 86400000);
+  return { since: fmt(prevSince), until: fmt(prevUntil) };
+}
+
+function getDates() {
+  return presetDates(S.preset);
+}
+
+// Preset label names
+const presetNames = {
+  today:'Hoje', yesterday:'Ontem', last7:'Últimos 7 dias', last14:'Últimos 14 dias',
+  last30:'Últimos 30 dias', thismonth:'Este mês', lastmonth:'Mês passado',
+  lastyear:'Ano passado', custom:'Personalizado'
+};
+
+function updatePresetRanges() {
+  const all = ['today','yesterday','last7','last14','last30','thismonth','lastmonth','lastyear'];
+  all.forEach(p => {
+    const el = document.getElementById('pr-'+p);
+    if (!el) return;
+    const { since, until } = presetDates(p);
+    if (!since) return;
+    el.textContent = since===until ? since : `${since.slice(5)} → ${until.slice(5)}`;
+  });
+}
+
+function setPreset(preset) {
+  S.preset = preset;
+  S.customSince = null; S.customUntil = null;
+  // Update active state
+  document.querySelectorAll('.pm-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.pm-item[data-preset="${preset}"]`)?.classList.add('active');
+  // Update trigger label
+  document.getElementById('periodTriggerLabel').textContent = presetNames[preset]||preset;
+  document.getElementById('periodTrigger').classList.remove('open');
+  document.getElementById('periodMenu').classList.remove('open');
+  loadAll();
+}
+
+function applyCustom() {
+  const s = document.getElementById('date-since').value;
+  const u = document.getElementById('date-until').value;
+  if (!s || !u) { alert('Preencha as duas datas.'); return; }
+  if (s > u) { alert('Data inicial não pode ser maior que a final.'); return; }
+  S.preset = 'custom'; S.customSince = s; S.customUntil = u;
+  document.querySelectorAll('.pm-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('periodTriggerLabel').textContent = `${s.slice(5)} → ${u.slice(5)}`;
+  document.getElementById('periodTrigger').classList.remove('open');
+  document.getElementById('periodMenu').classList.remove('open');
+  loadAll();
+}
+
+function checkCustomDates() {
+  const s = document.getElementById('date-since').value;
+  const u = document.getElementById('date-until').value;
+  if (s && u && s <= u) applyCustom();
+}
+
+function togglePeriodMenu() {
+  const trigger = document.getElementById('periodTrigger');
+  const menu = document.getElementById('periodMenu');
+  const isOpen = menu.classList.contains('open');
+  closeAllMenus();
+  if (!isOpen) { trigger.classList.add('open'); menu.classList.add('open'); updatePresetRanges(); }
+}
+
+/* ── campaign filter ── */
+function buildCampMenu() {
+  const list = document.getElementById('campList');
+  const allIns = S.allInsights;
+  list.innerHTML = allIns.map(ins => {
+    const camp = S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+    const type = objType(camp.objective||'');
+    const name = ins.campaign_name || camp.name || ins.campaign_id;
+    const isActive = S.campFilterId === ins.campaign_id;
+    return `<div class="camp-opt${isActive?' active':''}" data-id="${ins.campaign_id}" data-name="${esc(name)}" onclick="selectCampFilter('${ins.campaign_id}','${esc(name).replace(/'/g,"\\'")}')">
+      <div class="camp-opt-dot" style="background:${objColor(type)}"></div>
+      <span class="camp-opt-name" title="${esc(name)}">${esc(name)}</span>
+      <span class="camp-opt-chk">✓</span>
+    </div>`;
+  }).join('');
+}
+
+function filterCampOpts(q) {
+  const term = q.toLowerCase();
+  document.querySelectorAll('.camp-opt').forEach(el => {
+    const name = el.querySelector('.camp-opt-name').textContent.toLowerCase();
+    el.style.display = name.includes(term) ? '' : 'none';
+  });
+}
+
+function toggleCampMenu() {
+  const trigger = document.getElementById('campTrigger');
+  const menu = document.getElementById('campMenu');
+  const isOpen = menu.classList.contains('open');
+  closeAllMenus();
+  if (!isOpen) {
+    trigger.classList.add('open'); menu.classList.add('open');
+    buildCampMenu();
+    document.getElementById('campSearch').value = '';
+    filterCampOpts('');
+    setTimeout(()=>document.getElementById('campSearch').focus(), 50);
+  }
+}
+
+function selectCampFilter(id, name) {
+  S.campFilterId = id; S.campFilterName = name;
+  document.getElementById('campTriggerLabel').textContent = name;
+  document.getElementById('campTrigger').classList.add('filtered');
+  document.getElementById('campTrigger').classList.remove('open');
+  document.getElementById('campClearBtn').style.display = '';
+  document.getElementById('campMenu').classList.remove('open');
+  renderView();
+}
+
+function clearCampFilter(e) {
+  if (e) { e.stopPropagation(); }
+  S.campFilterId = null; S.campFilterName = null;
+  document.getElementById('campTriggerLabel').textContent = 'Todas as campanhas';
+  document.getElementById('campTrigger').classList.remove('filtered','open');
+  document.getElementById('campClearBtn').style.display = 'none';
+  document.getElementById('campMenu').classList.remove('open');
+  renderView();
+}
+
+function closeAllMenus() {
+  document.getElementById('periodTrigger')?.classList.remove('open');
+  document.getElementById('periodMenu')?.classList.remove('open');
+  document.getElementById('campTrigger')?.classList.remove('open');
+  document.getElementById('campMenu')?.classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('periodDropdown')?.contains(e.target)) {
+    document.getElementById('periodTrigger')?.classList.remove('open');
+    document.getElementById('periodMenu')?.classList.remove('open');
+  }
+  if (!document.getElementById('campFilter')?.contains(e.target)) {
+    document.getElementById('campTrigger')?.classList.remove('open');
+    document.getElementById('campMenu')?.classList.remove('open');
+  }
+});
+
+async function apiFetch(endpoint, extra={}) {
+  const dates = extra.since ? {since:extra.since,until:extra.until} : getDates();
+  const p = new URLSearchParams({endpoint, ...dates, ...extra});
+  const res = await fetch(`${API}?${p}`);
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
   return json;
 }
-async function apiFetchPrev(endpoint,extra={}) {
-  const {since,until}=getDates(S.period,1);
-  const p=new URLSearchParams({endpoint,since,until,...extra});
-  const res=await fetch(`${API}?${p}`);
-  const json=await res.json();
-  if(json.error) return {data:[]};
+
+async function apiFetchPrev(endpoint, extra={}) {
+  const prev = prevPeriodDates(S.preset);
+  if (!prev) return { data: [] };
+  const p = new URLSearchParams({endpoint, ...prev, ...extra});
+  const res = await fetch(`${API}?${p}`);
+  const json = await res.json();
+  if (json.error) return { data: [] };
   return json;
 }
 
@@ -790,7 +1124,13 @@ async function loadAll() {
     S.campMap={}; S.allInsights.forEach(i=>{S.campMap[i.campaign_id]=i});
     S.prevCampMap={}; S.prevInsights.forEach(i=>{S.prevCampMap[i.campaign_id]=i});
     S.daily=(dailyData.data||[]).sort((a,b)=>a.date_start.localeCompare(b.date_start));
-    S.loading=false; updateLastUpdate(); renderView();
+    S.loading=false; updateLastUpdate();
+    // Rebuild camp menu if open, and refresh trigger label if filter was set
+    if (S.campFilterId) {
+      const stillExists = S.allInsights.some(i => i.campaign_id === S.campFilterId);
+      if (!stillExists) clearCampFilter();
+    }
+    renderView();
   } catch(err) { S.loading=false; showError(err.message); }
 }
 
@@ -810,36 +1150,7 @@ async function loadAds(campId) {
   } catch(err) { showError(err.message); }
 }
 
-/* ══════════════════════════════════════════════
-   PERIOD BUTTONS
-══════════════════════════════════════════════ */
-document.querySelectorAll('.period-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    if(btn.dataset.days==='custom') {
-      const pk=document.getElementById('cpicker');
-      pk.style.display='flex';
-      const {since,until}=getDates(S.period);
-      document.getElementById('date-since').value=S.customSince||since;
-      document.getElementById('date-until').value=S.customUntil||until;
-    } else {
-      document.getElementById('cpicker').style.display='none';
-      S.period=parseInt(btn.dataset.days);
-      S.customSince=null; S.customUntil=null;
-      loadAll();
-    }
-  });
-});
 
-function applyCustom() {
-  const s=document.getElementById('date-since').value;
-  const u=document.getElementById('date-until').value;
-  if(!s||!u){alert('Preencha as datas.');return}
-  if(s>u){alert('Data inicial não pode ser maior.');return}
-  S.period=Math.round((new Date(u)-new Date(s))/(86400000))+1||1;
-  S.customSince=s; S.customUntil=u; loadAll();
-}
 
 /* ══════════════════════════════════════════════
    VIEW ROUTING
@@ -866,19 +1177,25 @@ function renderView() {
 }
 
 function periodLabel() {
-  if(S.customSince&&S.customUntil) return `${S.customSince} → ${S.customUntil}`;
-  return `últimos ${S.period} dias`;
+  if (S.preset === 'custom' && S.customSince && S.customUntil)
+    return `${S.customSince} → ${S.customUntil}`;
+  const { since, until } = presetDates(S.preset);
+  if (since === until) return since;
+  return `${since} → ${until}`;
 }
 
 /* ══════════════════════════════════════════════
    OVERVIEW
 ══════════════════════════════════════════════ */
 function renderOverview() {
-  const curr=agg(S.allInsights), prev=agg(S.prevInsights);
+  const ins = filteredInsights();
+  const prev = filteredPrevInsights();
+  const curr=agg(ins), prevAgg=agg(prev);
   return `
-    <div class="period-badge">📅 ${periodLabel()}</div>
-    ${renderKPIs(curr,prev)}
-    ${renderObjBlocks()}
+    <div class="period-badge">📅 ${periodLabel()}${S.campFilterId?` · <strong>${esc(S.campFilterName)}</strong>`:''}
+    </div>
+    ${renderKPIs(curr,prevAgg,ins)}
+    ${renderObjBlocks(ins)}
     <div class="grid-3-1">
       <div class="card">
         <div class="card-header">
@@ -897,38 +1214,42 @@ function renderOverview() {
           <span class="card-title">VERBA POR OBJETIVO</span>
           <span class="card-meta">distribuição %</span>
         </div>
-        ${renderPieChart()}
+        ${renderPieChart(ins)}
       </div>
     </div>
     <div class="card">
       <div class="card-header">
         <span class="card-title">CAMPANHAS</span>
-        <span class="card-meta">${S.allInsights.length} ativas no período</span>
+        <span class="card-meta">${ins.length} ativas no período</span>
       </div>
-      ${renderCampaignTable(true)}
+      ${renderCampaignTable(true,ins)}
     </div>`;
 }
 
 function renderCampaigns() {
-  const curr=agg(S.allInsights), prev=agg(S.prevInsights);
+  const ins = filteredInsights();
+  const prev = filteredPrevInsights();
+  const curr=agg(ins), prevAgg=agg(prev);
   return `
-    <div class="period-badge">📅 ${periodLabel()}</div>
-    ${renderKPIs(curr,prev)}
+    <div class="period-badge">📅 ${periodLabel()}${S.campFilterId?` · <strong>${esc(S.campFilterName)}</strong>`:''}
+    </div>
+    ${renderKPIs(curr,prevAgg,ins)}
     <div class="card">
       <div class="card-header">
         <span class="card-title">TODAS AS CAMPANHAS</span>
-        <span class="card-meta">${S.allInsights.length} com dados</span>
+        <span class="card-meta">${ins.length} com dados</span>
       </div>
-      ${renderCampaignTable(false)}
+      ${renderCampaignTable(false,ins)}
     </div>`;
 }
 
 function renderAds() {
+  const ins = filteredInsights();
   if(!S.selCamp) return `
     <p style="color:var(--t1);font-size:13px;font-weight:600;margin-bottom:12px">Selecione uma campanha para ver os criativos:</p>
     <div class="card">
       <div class="card-header"><span class="card-title">CAMPANHAS</span></div>
-      ${renderCampaignTable(false)}
+      ${renderCampaignTable(false,ins)}
     </div>`;
   return renderCampaignDetail();
 }
@@ -948,27 +1269,30 @@ function renderCampaignDetail() {
 /* ══════════════════════════════════════════════
    KPI ROW
 ══════════════════════════════════════════════ */
-function renderKPIs(curr,prev) {
-  const totalLeads  = S.allInsights.reduce((s,ins)=>{
-    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+function renderKPIs(curr,prev,ins) {
+  ins = ins || filteredInsights();
+  const totalLeads  = ins.reduce((s,i)=>{
+    const camp=S.campaigns.find(c=>c.id===i.campaign_id)||{};
     const t=objType(camp.objective||'');
-    return s+(t==='captacao'?getMainResult(ins,'captacao'):0);
+    return s+(t==='captacao'?getMainResult(i,'captacao'):0);
   },0);
-  const totalVendas = S.allInsights.reduce((s,ins)=>{
-    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+  const totalVendas = ins.reduce((s,i)=>{
+    const camp=S.campaigns.find(c=>c.id===i.campaign_id)||{};
     const t=objType(camp.objective||'');
-    return s+(t==='vendas'?getMainResult(ins,'vendas'):0);
+    return s+(t==='vendas'?getMainResult(i,'vendas'):0);
   },0);
-  const prevLeads = S.prevInsights.reduce((s,ins)=>{
-    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+  const prevLeads = filteredPrevInsights().reduce((s,i)=>{
+    const camp=S.campaigns.find(c=>c.id===i.campaign_id)||{};
     const t=objType(camp.objective||'');
-    return s+(t==='captacao'?getMainResult(ins,'captacao'):0);
+    return s+(t==='captacao'?getMainResult(i,'captacao'):0);
   },0);
+  const spendCap = ins.filter(i=>{const c=S.campaigns.find(x=>x.id===i.campaign_id)||{};return objType(c.objective||'')==='captacao'}).reduce((s,i)=>s+parseFloat(i.spend||0),0);
+  const spendVnd = ins.filter(i=>{const c=S.campaigns.find(x=>x.id===i.campaign_id)||{};return objType(c.objective||'')==='vendas'}).reduce((s,i)=>s+parseFloat(i.spend||0),0);
 
   const kpis=[
-    {icon:'💸', label:'Investimento',  val:fmtR(curr.spend),           sub:`${S.allInsights.length} campanhas`, d:deltaHTML(curr.spend,prev.spend)},
-    {icon:'🎯', label:'Leads',         val:fmtK(totalLeads),            sub:`CPL: ${totalLeads>0?fmtR(S.allInsights.filter(i=>{const c=S.campaigns.find(x=>x.id===i.campaign_id)||{};return objType(c.objective||'')==='captacao'}).reduce((s,i)=>s+parseFloat(i.spend||0),0)/totalLeads):'—'}`, d:deltaHTML(totalLeads,prevLeads)},
-    {icon:'🛒', label:'Compras',       val:fmtK(totalVendas),           sub:`CPA: ${totalVendas>0?fmtR(S.allInsights.filter(i=>{const c=S.campaigns.find(x=>x.id===i.campaign_id)||{};return objType(c.objective||'')==='vendas'}).reduce((s,i)=>s+parseFloat(i.spend||0),0)/totalVendas):'—'}`, d:''},
+    {icon:'💸', label:'Investimento',  val:fmtR(curr.spend),           sub:`${ins.length} campanhas`, d:deltaHTML(curr.spend,prev.spend)},
+    {icon:'🎯', label:'Leads',         val:fmtK(totalLeads),            sub:`CPL: ${totalLeads>0?fmtR(spendCap/totalLeads):'—'}`, d:deltaHTML(totalLeads,prevLeads)},
+    {icon:'🛒', label:'Compras',       val:fmtK(totalVendas),           sub:`CPA: ${totalVendas>0?fmtR(spendVnd/totalVendas):'—'}`, d:''},
     {icon:'👁',  label:'Impressões',   val:fmtK(curr.impressions),      sub:`CPM: ${fmtR(curr.cpm)}`, d:deltaHTML(curr.impressions,prev.impressions)},
     {icon:'🖱',  label:'Cliques',      val:fmtK(curr.clicks),           sub:`CTR: ${curr.ctr.toFixed(2)}%`, d:deltaHTML(curr.clicks,prev.clicks)},
     {icon:'📡',  label:'Alcance',      val:fmtK(curr.reach),            sub:`Freq: ${curr.frequency.toFixed(2)}`, d:deltaHTML(curr.reach,prev.reach)},
@@ -984,18 +1308,18 @@ function renderKPIs(curr,prev) {
 /* ══════════════════════════════════════════════
    OBJETIVO BLOCKS
 ══════════════════════════════════════════════ */
-function renderObjBlocks() {
-  // Agrupa insighsts por tipo de objetivo
+function renderObjBlocks(ins) {
+  ins = ins || filteredInsights();
   const groups = {};
-  S.allInsights.forEach(ins=>{
-    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+  ins.forEach(i=>{
+    const camp=S.campaigns.find(c=>c.id===i.campaign_id)||{};
     const t=objType(camp.objective||'');
     if(!groups[t]) groups[t]={'spend':0,'results':0,'camps':0,'ctr':0,'cpc':0,'n':0};
     const g=groups[t];
-    g.spend+=parseFloat(ins.spend||0);
-    g.results+=getMainResult(ins,t);
-    g.ctr+=parseFloat(ins.ctr||0);
-    g.cpc+=parseFloat(ins.cpc||0);
+    g.spend+=parseFloat(i.spend||0);
+    g.results+=getMainResult(i,t);
+    g.ctr+=parseFloat(i.ctr||0);
+    g.cpc+=parseFloat(i.cpc||0);
     g.camps++; g.n++;
   });
 
@@ -1040,12 +1364,13 @@ function renderObjBlocks() {
 /* ══════════════════════════════════════════════
    PIE CHART (SVG manual)
 ══════════════════════════════════════════════ */
-function renderPieChart() {
+function renderPieChart(ins) {
+  ins = ins || filteredInsights();
   const groups={};
-  S.allInsights.forEach(ins=>{
-    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+  ins.forEach(i=>{
+    const camp=S.campaigns.find(c=>c.id===i.campaign_id)||{};
     const t=objType(camp.objective||'');
-    groups[t]=(groups[t]||0)+parseFloat(ins.spend||0);
+    groups[t]=(groups[t]||0)+parseFloat(i.spend||0);
   });
 
   const order=['captacao','vendas','engaj','trafego','outros'];
@@ -1159,14 +1484,16 @@ function bindChartTabs() {
    BAR CHART (gasto por campanha)
 ══════════════════════════════════════════════ */
 function renderBarChart() {
-  const sorted=[...S.allInsights].sort((a,b)=>parseFloat(b.spend||0)-parseFloat(a.spend||0)).slice(0,8);
+function renderBarChart(ins) {
+  ins = ins || filteredInsights();
+  const sorted=[...ins].sort((a,b)=>parseFloat(b.spend||0)-parseFloat(a.spend||0)).slice(0,8);
   if(!sorted.length) return '<div class="state"><div class="state-sub">Sem dados</div></div>';
   const max=parseFloat(sorted[0].spend||1);
-  return `<div class="bars">${sorted.map(ins=>`
+  return `<div class="bars">${sorted.map(i=>`
     <div class="bar-row">
-      <span class="bar-lbl" title="${esc(ins.campaign_name)}">${esc(ins.campaign_name)}</span>
-      <div class="bar-track"><div class="bar-fill" data-pct="${(parseFloat(ins.spend||0)/max*100).toFixed(1)}" style="width:0%"></div></div>
-      <span class="bar-val">${fmtR(ins.spend)}</span>
+      <span class="bar-lbl" title="${esc(i.campaign_name)}">${esc(i.campaign_name)}</span>
+      <div class="bar-track"><div class="bar-fill" data-pct="${(parseFloat(i.spend||0)/max*100).toFixed(1)}" style="width:0%"></div></div>
+      <span class="bar-val">${fmtR(i.spend)}</span>
     </div>`).join('')}</div>`;
 }
 
@@ -1179,10 +1506,11 @@ function animateBars() {
 /* ══════════════════════════════════════════════
    CAMPAIGN TABLE
 ══════════════════════════════════════════════ */
-function renderCampaignTable(compact=false) {
-  const rows=S.allInsights.map(ins=>{
-    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
-    return {...camp,ins};
+function renderCampaignTable(compact=false, ins) {
+  ins = ins || filteredInsights();
+  const rows=ins.map(i=>{
+    const camp=S.campaigns.find(c=>c.id===i.campaign_id)||{};
+    return {...camp,ins:i};
   });
 
   const sorted=[...rows].sort((a,b)=>{
@@ -1374,6 +1702,10 @@ window.addEventListener('load',()=>{
 });
 
 document.addEventListener('DOMContentLoaded',()=>{
+  // Set default preset label
+  document.getElementById('periodTriggerLabel').textContent = presetNames[S.preset] || S.preset;
+  // Mark default active
+  document.querySelector(`.pm-item[data-preset="${S.preset}"]`)?.classList.add('active');
   loadAll();
   setInterval(loadAll,30*60*1000);
 });
