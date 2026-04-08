@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "outputDirectory": "public",
   "functions": {
     "api/meta.js": {
       "runtime": "nodejs24.x"
     }
-  },
-  "rewrites": [
-    { "source": "/api/meta", "destination": "/api/meta" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  }
 }
