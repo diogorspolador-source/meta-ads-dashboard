@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Ads Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --surface3: #1e1e28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f5;
+    --text2: #8888a0;
+    --text3: #55556a;
+    --accent: #4f6ef7;
+    --accent2: #7c3aed;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --meta: #1877f2;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── GRID NOISE TEXTURE ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(79,110,247,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124,58,237,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .refresh-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .refresh-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: #3d5be0; }
+
+  .btn-ghost {
+    background: var(--surface3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+
+  /* ─── MAIN ─── */
+  .main {
+    position: relative;
+    z-index: 1;
+    padding: 28px 32px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  /* ─── CONTROLS BAR ─── */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .controls-left {
+    display: flex;
+    gap: 8px;
+  }
+
+  .period-btn {
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+
+  .period-btn.active, .period-btn:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .controls-right {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .level-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* ─── BREADCRUMB ─── */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .breadcrumb span { cursor: pointer; transition: color 0.15s; }
+  .breadcrumb span:hover { color: var(--accent); }
+  .breadcrumb .sep { color: var(--text3); }
+  .breadcrumb .current { color: var(--text2); cursor: default; }
+
+  /* ─── KPI CARDS ─── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .kpi-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 10px;
+  }
+
+  .kpi-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -1px;
+  }
+
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .kpi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+
+  .badge-green { background: rgba(34,197,94,0.12); color: var(--green); }
+  .badge-red { background: rgba(239,68,68,0.12); color: var(--red); }
+  .badge-yellow { background: rgba(245,158,11,0.12); color: var(--yellow); }
+
+  /* ─── TABLE ─── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .section-meta {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text3);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
+  }
+
+  th:hover { color: var(--text2); }
+  th.sorted { color: var(--accent); }
+
+  td {
+    padding: 13px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+  .name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 280px;
+  }
+
+  .name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .status-active { background: rgba(34,197,94,0.12); color: var(--green); }
+  .status-paused { background: rgba(245,158,11,0.12); color: var(--yellow); }
+  .status-inactive { background: rgba(136,136,160,0.1); color: var(--text3); }
+
+  .drill-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .drill-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ─── AD GRID ─── */
+  .ad-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .ad-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    animation: fadeUp 0.4s ease both;
+    cursor: pointer;
+  }
+
+  .ad-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-3px);
+  }
+
+  .ad-thumb {
+    width: 100%;
+    aspect-ratio: 1.91;
+    object-fit: cover;
+    background: var(--surface3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text3);
+    font-size: 12px;
+  }
+
+  .ad-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ad-thumb-placeholder {
+    width: 100%;
+    aspect-ratio: 1.91;
+    background: var(--surface3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text3);
+    font-size: 12px;
+  }
+
+  .ad-info {
+    padding: 14px;
+  }
+
+  .ad-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ad-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .ad-metric {
+    background: var(--surface3);
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+
+  .ad-metric-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 3px;
+  }
+
+  .ad-metric-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .rank-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
+  .ad-card-wrap { position: relative; }
+
+  /* ─── EMPTY / LOADING ─── */
+  .state-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px;
+    color: var(--text3);
+    gap: 12px;
+  }
+
+  .state-box .icon { font-size: 36px; }
+  .state-box .title { font-size: 15px; font-weight: 600; color: var(--text2); }
+  .state-box .sub { font-size: 13px; }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── ERROR ─── */
+  .error-box {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    color: var(--red);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  /* ─── SORT ARROW ─── */
+  .sort-arrow { margin-left: 4px; opacity: 0.5; }
+  th.sorted .sort-arrow { opacity: 1; }
+
+  /* ─── OBJECTIVE BADGE ─── */
+  .obj-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--surface3);
+    color: var(--text2);
+    letter-spacing: 0.3px;
+  }
+
+  /* ─── BAR CHART ─── */
+  .bar-chart {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .bar-label {
+    font-size: 12px;
+    color: var(--text2);
+    width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--surface3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .bar-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    width: 80px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .main { padding: 16px; }
+    .topbar { padding: 0 16px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .controls { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">◈</div>
+    Meta Ads Dashboard
+  </div>
+  <div class="topbar-right">
+    <span class="refresh-info">
+      <span class="refresh-dot"></span>
+      <span id="last-update">—</span>
+    </span>
+    <button class="btn btn-ghost" onclick="refreshData()">↺ Atualizar</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- ERROR -->
+  <div id="error-box" class="error-box" style="display:none;"></div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="controls-left" id="period-btns">
+      <button class="period-btn active" data-days="7">7 dias</button>
+      <button class="period-btn" data-days="14">14 dias</button>
+      <button class="period-btn" data-days="30">30 dias</button>
+      <button class="period-btn" data-days="60">60 dias</button>
+      <button class="period-btn" data-days="90">90 dias</button>
+    </div>
+    <div class="controls-right">
+      <select class="level-select" id="view-level" onchange="setLevel(this.value)">
+        <option value="campaign">Campanhas</option>
+        <option value="adset">Conjuntos</option>
+        <option value="ad">Anúncios</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb" id="breadcrumb"></div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- CONTENT -->
+  <div id="content"></div>
+</div>
+
+<script>
+const API_BASE = '/api/meta';
+
+let state = {
+  period: 7,
+  level: 'campaign',
+  campaignId: null,
+  campaignName: null,
+  adsetId: null,
+  adsetName: null,
+  sortCol: 'spend',
+  sortDir: 'desc',
+  data: null,
+  loading: false,
+};
+
+// ─── INIT ───
+document.addEventListener('DOMContentLoaded', () => {
+  setupPeriodBtns();
+  fetchData();
+  setInterval(fetchData, 30 * 60 * 1000); // auto-refresh 30min
+});
+
+function setupPeriodBtns() {
+  document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.period = parseInt(btn.dataset.days);
+      fetchData();
+    });
+  });
+}
+
+function setLevel(level) {
+  state.level = level;
+  state.campaignId = null;
+  state.adsetId = null;
+  state.campaignName = null;
+  state.adsetName = null;
+  fetchData();
+}
+
+// ─── DATE HELPERS ───
+function getDateRange(days) {
+  const until = new Date();
+  const since = new Date();
+  since.setDate(since.getDate() - days);
+  const fmt = d => d.toISOString().split('T')[0];
+  return { since: fmt(since), until: fmt(until) };
+}
+
+// ─── FETCH ───
+async function fetchData() {
+  if (state.loading) return;
+  state.loading = true;
+  showLoading();
+
+  const { since, until } = getDateRange(state.period);
+  const params = new URLSearchParams({
+    level: state.level,
+    since,
+    until,
+  });
+
+  if (state.campaignId) params.set('campaign_id', state.campaignId);
+  if (state.adsetId) params.set('adset_id', state.adsetId);
+
+  try {
+    const res = await fetch(`${API_BASE}?${params}`);
+    const json = await res.json();
+
+    if (json.error) throw new Error(json.error);
+
+    state.data = json.data || (json.spend !== undefined ? [json] : []);
+    state.loading = false;
+    hideError();
+    renderAll();
+    document.getElementById('last-update').textContent =
+      'Atualizado ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  } catch (err) {
+    state.loading = false;
+    showError(err.message);
+    showEmpty('Erro ao carregar dados', err.message);
+  }
+}
+
+function refreshData() { fetchData(); }
+
+// ─── DRILL DOWN ───
+function drillCampaign(id, name) {
+  state.campaignId = id;
+  state.campaignName = name;
+  state.adsetId = null;
+  state.adsetName = null;
+  state.level = 'adset';
+  document.getElementById('view-level').value = 'adset';
+  fetchData();
+}
+
+function drillAdset(id, name) {
+  state.adsetId = id;
+  state.adsetName = name;
+  state.level = 'ad';
+  document.getElementById('view-level').value = 'ad';
+  fetchData();
+}
+
+function goBack(level) {
+  if (level === 'campaign') {
+    state.level = 'campaign';
+    state.campaignId = null;
+    state.adsetId = null;
+    state.campaignName = null;
+    state.adsetName = null;
+  } else if (level === 'adset') {
+    state.level = 'adset';
+    state.adsetId = null;
+    state.adsetName = null;
+  }
+  document.getElementById('view-level').value = state.level;
+  fetchData();
+}
+
+// ─── RENDER ALL ───
+function renderAll() {
+  renderBreadcrumb();
+  const items = state.data || [];
+  renderKPIs(items);
+
+  if (state.level === 'ad') {
+    renderAdGrid(items);
+  } else {
+    renderTable(items);
+    renderBarChart(items);
+  }
+}
+
+// ─── BREADCRUMB ───
+function renderBreadcrumb() {
+  const el = document.getElementById('breadcrumb');
+  const parts = [];
+
+  parts.push(`<span onclick="goBack('campaign')">Campanhas</span>`);
+
+  if (state.campaignName) {
+    parts.push(`<span class="sep">›</span>`);
+    if (state.level === 'adset') {
+      parts.push(`<span class="current">${esc(state.campaignName)}</span>`);
+    } else {
+      parts.push(`<span onclick="goBack('adset')">${esc(state.campaignName)}</span>`);
+    }
+  }
+
+  if (state.adsetName) {
+    parts.push(`<span class="sep">›</span>`);
+    parts.push(`<span class="current">${esc(state.adsetName)}</span>`);
+  }
+
+  el.innerHTML = parts.join('');
+}
+
+// ─── KPIs ───
+function renderKPIs(items) {
+  const totals = aggregateMetrics(items);
+  const el = document.getElementById('kpi-grid');
+
+  const fmt = (v, type) => {
+    if (v == null || isNaN(v)) return '—';
+    if (type === 'currency') return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (type === 'pct') return Number(v).toFixed(2) + '%';
+    if (type === 'num') return Number(v).toLocaleString('pt-BR');
+    if (type === 'mono') return Number(v).toFixed(2);
+    return v;
+  };
+
+  const kpis = [
+    { label: 'Gasto Total', value: fmt(totals.spend, 'currency'), sub: `${items.length} ${state.level === 'campaign' ? 'campanhas' : state.level === 'adset' ? 'conjuntos' : 'anúncios'}` },
+    { label: 'Impressões', value: fmt(totals.impressions, 'num'), sub: `CPM: ${fmt(totals.cpm, 'currency')}` },
+    { label: 'Cliques', value: fmt(totals.clicks, 'num'), sub: `CTR: ${fmt(totals.ctr, 'pct')}` },
+    { label: 'Alcance', value: fmt(totals.reach, 'num'), sub: `Freq: ${totals.frequency ? Number(totals.frequency).toFixed(2) : '—'}` },
+    { label: 'CPC Médio', value: fmt(totals.cpc, 'currency'), sub: 'por clique' },
+    { label: 'Resultados', value: fmt(totals.results, 'num'), sub: `CPR: ${fmt(totals.cpr, 'currency')}` },
+  ];
+
+  el.innerHTML = kpis.map((k, i) => `
+    <div class="kpi-card" style="animation-delay:${i * 0.05}s">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>
+  `).join('');
+}
+
+// ─── TABLE ───
+function renderTable(items) {
+  const content = document.getElementById('content');
+  if (!items.length) {
+    content.innerHTML = '';
+    showEmpty('Nenhum dado encontrado', 'Tente outro período ou verifique as configurações.');
+    return;
+  }
+
+  const sorted = sortItems([...items], state.sortCol, state.sortDir);
+  const isCampaign = state.level === 'campaign';
+
+  const cols = [
+    { key: 'name', label: 'Nome', sortable: false },
+    { key: 'status', label: 'Status', sortable: false },
+    { key: 'spend', label: 'Gasto', sortable: true },
+    { key: 'impressions', label: 'Impressões', sortable: true },
+    { key: 'clicks', label: 'Cliques', sortable: true },
+    { key: 'ctr', label: 'CTR', sortable: true },
+    { key: 'cpc', label: 'CPC', sortable: true },
+    { key: 'cpm', label: 'CPM', sortable: true },
+    { key: 'reach', label: 'Alcance', sortable: true },
+    { key: 'results', label: 'Resultados', sortable: true },
+    { key: 'action', label: '', sortable: false },
+  ];
+
+  const thHTML = cols.map(c => {
+    const isSorted = state.sortCol === c.key;
+    return `<th class="${isSorted ? 'sorted' : ''}" ${c.sortable ? `onclick="toggleSort('${c.key}')"` : ''}>
+      ${c.label}${c.sortable ? `<span class="sort-arrow">${isSorted ? (state.sortDir === 'desc' ? '↓' : '↑') : '↕'}</span>` : ''}
+    </th>`;
+  }).join('');
+
+  const tdHTML = sorted.map(item => {
+    const ins = item.insights?.data?.[0] || {};
+    const spend = parseFloat(ins.spend || 0);
+    const imp = parseInt(ins.impressions || 0);
+    const clicks = parseInt(ins.clicks || 0);
+    const ctr = parseFloat(ins.ctr || 0);
+    const cpc = parseFloat(ins.cpc || 0);
+    const cpm = parseFloat(ins.cpm || 0);
+    const reach = parseInt(ins.reach || 0);
+    const results = getResults(ins);
+    const status = item.status || '—';
+
+    return `<tr>
+      <td>
+        <div class="name-cell">
+          <span class="name-text" title="${esc(item.name)}">${esc(item.name)}</span>
+          ${isCampaign && item.objective ? `<span class="obj-badge">${fmtObj(item.objective)}</span>` : ''}
+        </div>
+      </td>
+      <td><span class="status-pill ${statusClass(status)}">${fmtStatus(status)}</span></td>
+      <td class="mono">${fmtCurrency(spend)}</td>
+      <td class="mono">${fmtNum(imp)}</td>
+      <td class="mono">${fmtNum(clicks)}</td>
+      <td class="mono">${ctr.toFixed(2)}%</td>
+      <td class="mono">${fmtCurrency(cpc)}</td>
+      <td class="mono">${fmtCurrency(cpm)}</td>
+      <td class="mono">${fmtNum(reach)}</td>
+      <td class="mono">${results > 0 ? fmtNum(results) : '—'}</td>
+      <td>
+        ${state.level === 'campaign'
+          ? `<button class="drill-btn" onclick="drillCampaign('${item.id}', '${esc(item.name).replace(/'/g, "\\'")}')">Ver conjuntos →</button>`
+          : state.level === 'adset'
+          ? `<button class="drill-btn" onclick="drillAdset('${item.id}', '${esc(item.name).replace(/'/g, "\\'")}')">Ver anúncios →</button>`
+          : ''}
+      </td>
+    </tr>`;
+  }).join('');
+
+  content.innerHTML = `
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">${levelLabel()}</span>
+        <span class="section-meta">${sorted.length} itens · ${periodLabel()}</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>${thHTML}</tr></thead>
+          <tbody>${tdHTML}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  renderBarChart(items);
+}
+
+// ─── BAR CHART ───
+function renderBarChart(items) {
+  if (!items.length || state.level === 'ad') return;
+
+  const sorted = [...items]
+    .map(item => ({
+      name: item.name,
+      spend: parseFloat(item.insights?.data?.[0]?.spend || 0),
+    }))
+    .sort((a, b) => b.spend - a.spend)
+    .slice(0, 8);
+
+  const max = sorted[0]?.spend || 1;
+
+  const content = document.getElementById('content');
+  const existing = content.querySelector('.bar-section');
+  if (existing) existing.remove();
+
+  const barHTML = sorted.map(item => `
+    <div class="bar-row">
+      <span class="bar-label" title="${esc(item.name)}">${esc(item.name)}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(item.spend / max * 100).toFixed(1)}%"></div>
+      </div>
+      <span class="bar-value">${fmtCurrency(item.spend)}</span>
+    </div>
+  `).join('');
+
+  const barSection = document.createElement('div');
+  barSection.className = 'section bar-section';
+  barSection.innerHTML = `
+    <div class="section-header">
+      <span class="section-title">Gasto por ${state.level === 'campaign' ? 'Campanha' : 'Conjunto'}</span>
+      <span class="section-meta">Top ${sorted.length}</span>
+    </div>
+    <div class="bar-chart">${barHTML}</div>
+  `;
+  content.appendChild(barSection);
+}
+
+// ─── AD GRID ───
+function renderAdGrid(items) {
+  const content = document.getElementById('content');
+  if (!items.length) {
+    content.innerHTML = '';
+    showEmpty('Nenhum anúncio encontrado', 'Tente outro período.');
+    return;
+  }
+
+  const sorted = sortItems([...items], 'ctr', 'desc');
+
+  const cards = sorted.map((item, i) => {
+    const ins = item.insights?.data?.[0] || {};
+    const creative = item.creative || {};
+    const thumbUrl = creative.thumbnail_url || creative.image_url || null;
+    const spend = parseFloat(ins.spend || 0);
+    const ctr = parseFloat(ins.ctr || 0);
+    const cpc = parseFloat(ins.cpc || 0);
+    const clicks = parseInt(ins.clicks || 0);
+
+    const thumb = thumbUrl
+      ? `<img src="${thumbUrl}" alt="criativo" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'ad-thumb-placeholder\\'>Sem imagem</div>'">`
+      : '';
+
+    return `
+      <div class="ad-card-wrap">
+        ${i < 3 ? `<span class="rank-badge">#${i+1}</span>` : ''}
+        <div class="ad-card">
+          <div class="ad-thumb">${thumb || '<div class="ad-thumb-placeholder">Sem imagem</div>'}</div>
+          <div class="ad-info">
+            <div class="ad-name" title="${esc(item.name)}">${esc(item.name)}</div>
+            <div class="ad-metrics">
+              <div class="ad-metric">
+                <div class="ad-metric-label">Gasto</div>
+                <div class="ad-metric-value">${fmtCurrency(spend)}</div>
+              </div>
+              <div class="ad-metric">
+                <div class="ad-metric-label">CTR</div>
+                <div class="ad-metric-value">${ctr.toFixed(2)}%</div>
+              </div>
+              <div class="ad-metric">
+                <div class="ad-metric-label">Cliques</div>
+                <div class="ad-metric-value">${fmtNum(clicks)}</div>
+              </div>
+              <div class="ad-metric">
+                <div class="ad-metric-label">CPC</div>
+                <div class="ad-metric-value">${fmtCurrency(cpc)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  content.innerHTML = `
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Criativos · Ranking por CTR</span>
+        <span class="section-meta">${sorted.length} anúncios · ${periodLabel()}</span>
+      </div>
+      <div class="ad-grid">${cards}</div>
+    </div>
+  `;
+}
+
+// ─── SORT ───
+function toggleSort(col) {
+  if (state.sortCol === col) {
+    state.sortDir = state.sortDir === 'desc' ? 'asc' : 'desc';
+  } else {
+    state.sortCol = col;
+    state.sortDir = 'desc';
+  }
+  renderTable(state.data || []);
+}
+
+function sortItems(items, col, dir) {
+  return items.sort((a, b) => {
+    const insA = a.insights?.data?.[0] || {};
+    const insB = b.insights?.data?.[0] || {};
+    const keys = { spend: 'spend', impressions: 'impressions', clicks: 'clicks', ctr: 'ctr', cpc: 'cpc', cpm: 'cpm', reach: 'reach' };
+
+    let va = parseFloat(insA[keys[col]] || 0);
+    let vb = parseFloat(insB[keys[col]] || 0);
+
+    if (col === 'results') {
+      va = getResults(insA);
+      vb = getResults(insB);
+    }
+
+    return dir === 'desc' ? vb - va : va - vb;
+  });
+}
+
+// ─── AGGREGATION ───
+function aggregateMetrics(items) {
+  let spend = 0, impressions = 0, clicks = 0, reach = 0, results = 0, frequency = 0;
+  let ctrSum = 0, cpcSum = 0, cpmSum = 0, count = 0;
+
+  items.forEach(item => {
+    const ins = item.insights?.data?.[0] || (item.spend !== undefined ? item : {});
+    spend += parseFloat(ins.spend || 0);
+    impressions += parseInt(ins.impressions || 0);
+    clicks += parseInt(ins.clicks || 0);
+    reach += parseInt(ins.reach || 0);
+    results += getResults(ins);
+    ctrSum += parseFloat(ins.ctr || 0);
+    cpcSum += parseFloat(ins.cpc || 0);
+    cpmSum += parseFloat(ins.cpm || 0);
+    if (ins.frequency) frequency += parseFloat(ins.frequency);
+    count++;
+  });
+
+  return {
+    spend,
+    impressions,
+    clicks,
+    reach,
+    results,
+    ctr: count ? ctrSum / count : 0,
+    cpc: count ? cpcSum / count : 0,
+    cpm: count ? cpmSum / count : 0,
+    frequency: count ? frequency / count : 0,
+    cpr: results > 0 ? spend / results : null,
+  };
+}
+
+function getResults(ins) {
+  if (!ins.actions) return 0;
+  const priority = ['offsite_conversion.fb_pixel_purchase', 'lead', 'offsite_conversion.fb_pixel_lead', 'link_click'];
+  for (const key of priority) {
+    const found = ins.actions.find(a => a.action_type === key);
+    if (found) return parseInt(found.value || 0);
+  }
+  return ins.actions.reduce((s, a) => s + parseInt(a.value || 0), 0);
+}
+
+// ─── UI HELPERS ───
+function showLoading() {
+  document.getElementById('kpi-grid').innerHTML = Array(6).fill(`
+    <div class="kpi-card" style="opacity:0.4">
+      <div class="kpi-label">—</div>
+      <div class="kpi-value" style="color:var(--text3)">—</div>
+    </div>
+  `).join('');
+  document.getElementById('content').innerHTML = `
+    <div class="section"><div class="state-box"><div class="spinner"></div><div class="sub">Carregando dados...</div></div></div>
+  `;
+}
+
+function showEmpty(title, sub) {
+  document.getElementById('content').innerHTML = `
+    <div class="section"><div class="state-box">
+      <div class="icon">◌</div>
+      <div class="title">${title}</div>
+      <div class="sub">${sub}</div>
+    </div></div>
+  `;
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-box');
+  el.style.display = 'block';
+  el.textContent = '⚠ ' + msg;
+}
+
+function hideError() {
+  document.getElementById('error-box').style.display = 'none';
+}
+
+// ─── FORMAT HELPERS ───
+function fmtCurrency(v) {
+  if (!v || isNaN(v)) return '—';
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtNum(v) {
+  if (!v || isNaN(v)) return '—';
+  return Number(v).toLocaleString('pt-BR');
+}
+
+function statusClass(s) {
+  if (!s) return 'status-inactive';
+  const l = s.toLowerCase();
+  if (l === 'active') return 'status-active';
+  if (l === 'paused') return 'status-paused';
+  return 'status-inactive';
+}
+
+function fmtStatus(s) {
+  if (!s) return '—';
+  const map = { ACTIVE: 'Ativo', PAUSED: 'Pausado', ARCHIVED: 'Arquivado', DELETED: 'Deletado' };
+  return map[s.toUpperCase()] || s;
+}
+
+function fmtObj(obj) {
+  if (!obj) return '';
+  const map = {
+    OUTCOME_TRAFFIC: 'Tráfego',
+    OUTCOME_LEADS: 'Leads',
+    OUTCOME_SALES: 'Vendas',
+    OUTCOME_AWARENESS: 'Alcance',
+    OUTCOME_ENGAGEMENT: 'Engaj.',
+    OUTCOME_APP_PROMOTION: 'App',
+    LINK_CLICKS: 'Tráfego',
+    LEAD_GENERATION: 'Leads',
+    CONVERSIONS: 'Conversões',
+    REACH: 'Alcance',
+    BRAND_AWARENESS: 'Awareness',
+  };
+  return map[obj] || obj;
+}
+
+function levelLabel() {
+  return { campaign: 'Campanhas', adset: 'Conjuntos de Anúncios', ad: 'Anúncios' }[state.level] || '';
+}
+
+function periodLabel() {
+  return `últimos ${state.period} dias`;
+}
+
+function esc(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>
