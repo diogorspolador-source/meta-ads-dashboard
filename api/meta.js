@@ -34,7 +34,14 @@ export default async function handler(req, res) {
 
       case 'ads':
         if (!id) return res.status(400).json({ error: 'Parâmetro id obrigatório para ads.' });
-        url = `${BASE}/${id}/ads?fields=id,name,status,creative{id,name,thumbnail_url,image_url}&limit=50&access_token=${TOKEN}`;
+        // Busca anúncios E insights juntos em uma chamada só
+        url = `${BASE}/${id}/ads?fields=id,name,status,creative{id,name,thumbnail_url,image_url,effective_object_story_id,object_story_spec}&limit=100&access_token=${TOKEN}`;
+        break;
+
+      case 'ads_with_insights':
+        // Endpoint alternativo: busca insights diretamente no nível de ad da campanha
+        if (!id) return res.status(400).json({ error: 'Parâmetro id obrigatório.' });
+        url = `${BASE}/${id}/ads?fields=id,name,status,insights.limit(1){${insightFields}},creative{id,name,thumbnail_url,image_url}&limit=100${timeParam}&access_token=${TOKEN}`;
         break;
 
       case 'ad_insights':
@@ -43,7 +50,7 @@ export default async function handler(req, res) {
         break;
 
       default:
-        return res.status(400).json({ error: `Endpoint inválido: "${endpoint}". Verifique o frontend.` });
+        return res.status(400).json({ error: `Endpoint inválido: "${endpoint}".` });
     }
 
     const response = await fetch(url);
