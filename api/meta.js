@@ -14,14 +14,15 @@ export default async function handler(req, res) {
 
   const { level = 'campaign', since, until, campaign_id, adset_id } = req.query;
 
-  const dateRange = since && until
-    ? `&time_range={"since":"${since}","until":"${until}"}`
-    : `&date_preset=last_30d`;
+  const timeRange = since && until
+    ? `time_range={"since":"${since}","until":"${until}"}`
+    : `date_preset=last_30d`;
 
   const BASE = 'https://graph.facebook.com/v19.0';
 
-  const fields = [
-    'name', 'status', 'objective',
+  const parentFields = 'name,status,objective';
+
+  const insightFields = [
     'spend', 'impressions', 'clicks', 'reach', 'frequency',
     'ctr', 'cpm', 'cpc',
     'actions', 'cost_per_action_type',
@@ -32,9 +33,9 @@ export default async function handler(req, res) {
     let url = '';
 
     if (level === 'campaign') {
-      url = `${BASE}/${AD_ACCOUNT}/campaigns?fields=${fields},insights{${fields}}&limit=50${dateRange}&access_token=${TOKEN}`;
+      url = `${BASE}/${AD_ACCOUNT}/campaigns?fields=${parentFields},insights.${timeRange}{${insightFields}}&limit=50&access_token=${TOKEN}`;
     } else if (level === 'adset' && campaign_id) {
-      url = `${BASE}/${campaign_id}/adsets?fields=${fields},insights{${fields}}&limit=50${dateRange}&access_token=${TOKEN}`;
+      url = `${BASE}/${campaign_id}/adsets?fields=${parentFields},insights.${timeRange}{${insightFields}}&limit=50&access_token=${TOKEN}`;
     } else if (level === 'ad') {
       const parentParam = adset_id
         ? `${BASE}/${adset_id}/ads`
@@ -42,9 +43,9 @@ export default async function handler(req, res) {
         ? `${BASE}/${campaign_id}/ads`
         : `${BASE}/${AD_ACCOUNT}/ads`;
 
-      url = `${parentParam}?fields=${fields},insights{${fields}},creative{id,name,thumbnail_url,image_url,body,title,object_story_spec}&limit=50${dateRange}&access_token=${TOKEN}`;
+      url = `${parentParam}?fields=${parentFields},insights.${timeRange}{${insightFields}},creative{id,name,thumbnail_url,image_url}&limit=50&access_token=${TOKEN}`;
     } else if (level === 'account') {
-      url = `${BASE}/${AD_ACCOUNT}/insights?fields=${fields}&${dateRange.slice(1)}&access_token=${TOKEN}`;
+      url = `${BASE}/${AD_ACCOUNT}/insights?${timeRange}&fields=${insightFields}&access_token=${TOKEN}`;
     } else {
       return res.status(400).json({ error: 'Invalid level parameter.' });
     }
