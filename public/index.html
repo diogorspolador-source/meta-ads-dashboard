@@ -314,19 +314,30 @@ async function loadAll() {
 async function loadAds(campaignId) {
   showLoading();
   try {
-    const adsData = await apiFetch('ads', {id:campaignId});
+    const adsData = await apiFetch('ads_with_insights', {id: campaignId});
     const ads = adsData.data || [];
-    const insResults = await Promise.all(
-      ads.map(ad => apiFetch('ad_insights', {id:ad.id})
-        .then(r => ({id:ad.id, ins:r.data?.[0]||{}}))
-        .catch(() => ({id:ad.id, ins:{}}))
-      )
-    );
     S.adInsights = {};
-    insResults.forEach(r => { S.adInsights[r.id] = r.ins; });
-    S.ads = ads;
+    S.ads = ads.map(ad => {
+      const ins = ad.insights?.data?.[0] || {};
+      S.adInsights[ad.id] = ins;
+      const {insights, ...adClean} = ad;
+      return adClean;
+    });
+    if (S.ads.length === 0) {
+      document.getElementById('page-content').innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Criativos · ${esc(S.selectedCampaignName||'')}</span>
+          </div>
+          <div class="state">
+            <div class="state-sub">Nenhum anúncio encontrado para essa campanha no período selecionado.</div>
+            <div class="state-sub" style="margin-top:4px;color:var(--text3)">Tente ampliar o período de datas.</div>
+          </div>
+        </div>`;
+      return;
+    }
     renderView();
-  } catch(err) { showError(err.message); }
+  } catch(err) { showError('Erro ao carregar criativos: ' + err.message); }
 }
 
 // ── PERIOD BUTTONS ──
