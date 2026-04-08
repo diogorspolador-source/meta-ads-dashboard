@@ -869,6 +869,8 @@ function filteredPrevInsights() {
   if (!S.campFilterId) return S.prevInsights;
   return S.prevInsights.filter(i => i.campaign_id === S.campFilterId);
 }
+
+function agg(items) {
   let spend=0,impressions=0,clicks=0,reach=0,results=0,ctrS=0,cpcS=0,cpmS=0,freqS=0,n=0;
   items.forEach(ins=>{
     spend+=parseFloat(ins.spend||0); impressions+=parseInt(ins.impressions||0);
@@ -1485,7 +1487,6 @@ function bindChartTabs() {
 /* ══════════════════════════════════════════════
    BAR CHART (gasto por campanha)
 ══════════════════════════════════════════════ */
-function renderBarChart() {
 function renderBarChart(ins) {
   ins = ins || filteredInsights();
   const sorted=[...ins].sort((a,b)=>parseFloat(b.spend||0)-parseFloat(a.spend||0)).slice(0,8);
