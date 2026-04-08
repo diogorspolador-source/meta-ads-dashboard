@@ -4,236 +4,600 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meta Ads · Método Prepara</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════ */
 :root {
-  --brand:    #E8500A;
-  --brand2:   #c43d00;
-  --brand3:   #ff7240;
-  --glow:     rgba(232,80,10,0.18);
-  --glow2:    rgba(232,80,10,0.10);
-  --bg:       #0a0a0a;
-  --bg2:      #111111;
-  --bg3:      #181818;
-  --surface:  rgba(255,255,255,0.04);
-  --surface2: rgba(255,255,255,0.07);
-  --border:   rgba(255,255,255,0.07);
-  --border2:  rgba(232,80,10,0.28);
-  --text:     #f5f5f5;
-  --text2:    #888;
-  --text3:    #444;
+  --brand:      #E8500A;
+  --brand-lt:   rgba(232,80,10,0.12);
+  --brand-bd:   rgba(232,80,10,0.25);
+  --brand-glow: rgba(232,80,10,0.20);
+
+  /* Objetivo */
+  --c-captacao: #3b82f6;
+  --c-vendas:   #10b981;
+  --c-engaj:    #f59e0b;
+  --c-trafego:  #8b5cf6;
+  --c-outros:   #6b7280;
+
+  /* Fundo — hierarquia em 4 camadas */
+  --bg0: #080a0f;   /* fundo geral */
+  --bg1: #0d1018;   /* sidebar / topbar */
+  --bg2: #141922;   /* cards */
+  --bg3: #1c2130;   /* inner cards / inputs */
+
+  /* Bordas */
+  --b0: rgba(255,255,255,0.05);
+  --b1: rgba(255,255,255,0.09);
+  --b2: rgba(255,255,255,0.14);
+
+  /* Texto */
+  --t0: #f0f2f8;
+  --t1: #8892a4;
+  --t2: #4a5568;
+
+  /* Semântico */
   --green:    #22c55e;
   --green-lt: rgba(34,197,94,0.10);
   --red:      #ef4444;
   --red-lt:   rgba(239,68,68,0.10);
   --yellow:   #f59e0b;
   --yellow-lt:rgba(245,158,11,0.10);
-  --r:        10px;
-  --r-sm:     7px;
-  --sidebar-w:220px;
+
+  --r:    10px;
+  --r-sm: 7px;
+  --r-lg: 14px;
+  --sidebar-w: 224px;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh;overflow-x:hidden}
 
-/* SPLASH */
-#splash{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.7s ease,visibility 0.7s ease}
-#splash.out{opacity:0;visibility:hidden;pointer-events:none}
-.splash-logo{display:flex;flex-direction:column;align-items:center;gap:10px;animation:splashIn 0.9s cubic-bezier(0.16,1,0.3,1) both}
-.splash-mark{width:68px;height:68px;border-radius:18px;background:var(--brand);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px var(--glow),0 0 120px rgba(232,80,10,0.06);margin-bottom:6px}
-.splash-mark svg{width:36px;height:36px}
-.splash-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,8vw,70px);letter-spacing:8px;color:#fff;text-align:center;line-height:1}
-.splash-sub{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#333;text-align:center;margin-top:2px}
-.splash-bar{width:100px;height:2px;background:#1a1a1a;border-radius:2px;margin-top:32px;overflow:hidden}
-.splash-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--brand),var(--brand3));border-radius:2px;animation:barLoad 1.8s cubic-bezier(0.16,1,0.3,1) 0.3s both}
-@keyframes barLoad{from{width:0}to{width:100%}}
-@keyframes splashIn{from{opacity:0;transform:translateY(22px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
 
-/* SIDEBAR */
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50}
-.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid var(--border)}
-.logo-row{display:flex;align-items:center;gap:10px}
-.logo-mark{width:32px;height:32px;border-radius:8px;background:var(--brand);display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px var(--glow);flex-shrink:0}
-.logo-mark svg{width:17px;height:17px}
-.logo-text{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2.5px;color:var(--text);line-height:1}
-.logo-sub{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:2px}
-.sidebar-nav{flex:1;padding:10px 8px;display:flex;flex-direction:column;gap:2px}
-.nav-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:12px 8px 5px}
-.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--r-sm);font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all 0.15s;border:none;background:transparent;width:100%;text-align:left;position:relative}
-.nav-item:hover{background:var(--surface);color:var(--text)}
-.nav-item.active{background:rgba(232,80,10,0.10);color:var(--text)}
-.nav-item.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--brand);border-radius:2px}
-.nav-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0;opacity:0.6}
-.nav-item.active .nav-icon{opacity:1}
-.sidebar-foot{padding:12px;border-top:1px solid var(--border)}
-.refresh-badge{display:flex;align-items:center;gap:7px;padding:8px 11px;border-radius:var(--r-sm);background:var(--surface);font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+body {
+  background: var(--bg0);
+  color: var(--t0);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* MAIN */
-.main{margin-left:var(--sidebar-w);min-height:100vh;position:relative;z-index:1}
+/* Grain overlay sutil */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+}
 
-/* TOPBAR */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 22px;height:52px;background:rgba(10,10,10,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:40;gap:10px;flex-wrap:wrap}
-.breadcrumb{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;flex-shrink:0}
-.bc-item{color:var(--text3);cursor:pointer;transition:color 0.15s}
-.bc-item:hover{color:var(--brand)}
-.bc-item.active{color:var(--text);cursor:default}
-.bc-sep{color:var(--text3)}
-.topbar-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.period-group{display:flex;gap:1px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px}
-.period-btn{padding:4px 11px;border-radius:5px;font-size:11px;font-weight:700;color:var(--text3);background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.3px;transition:all 0.12s}
-.period-btn:hover{color:var(--text)}
-.period-btn.active{background:var(--brand);color:#fff}
-.custom-picker{display:none;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:4px 10px}
-.custom-picker label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px}
-.custom-picker input[type=date]{border:1px solid var(--border);border-radius:5px;background:var(--bg2);font-family:'DM Mono',monospace;font-size:11px;color:var(--text);outline:none;padding:3px 7px;cursor:pointer;color-scheme:dark}
-.custom-picker input[type=date]:focus{border-color:var(--brand)}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all 0.15s}
-.btn-outline{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
-.btn-outline:hover{border-color:var(--brand);color:var(--brand)}
-.btn-primary{background:var(--brand);color:#fff}
-.btn-primary:hover{background:var(--brand2)}
-.btn-sm{padding:3px 9px;font-size:11px}
+/* ═══════════════════════════════════════════════
+   SPLASH
+═══════════════════════════════════════════════ */
+#splash {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity .7s ease, visibility .7s ease;
+}
+#splash.out { opacity: 0; visibility: hidden; pointer-events: none }
 
-/* CONTENT */
-.content{padding:20px 22px;max-width:1440px}
+.splash-inner {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 14px;
+  animation: sIn .9s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes sIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
 
-/* KPI */
-.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}
-@media(max-width:1200px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:15px 17px;transition:all 0.2s;animation:fadeUp 0.5s ease both;position:relative;overflow:hidden}
-.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--brand);opacity:0;transition:opacity 0.2s}
-.kpi:hover{border-color:var(--border2);background:var(--bg3);transform:translateY(-2px)}
-.kpi:hover::after{opacity:1}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.kpi-icon{font-size:15px;margin-bottom:9px;opacity:0.65}
-.kpi-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
-.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text);letter-spacing:1px;line-height:1}
-.kpi-sub{font-size:10px;color:var(--text3);margin-top:5px;font-family:'DM Mono',monospace}
-.kpi-delta{display:inline-flex;align-items:center;gap:2px;font-size:10px;font-weight:700;margin-top:7px;padding:2px 7px;border-radius:20px}
-.delta-up{background:var(--green-lt);color:var(--green)}
-.delta-down{background:var(--red-lt);color:var(--red)}
-.delta-flat{background:var(--surface);color:var(--text3)}
+.splash-mark {
+  width: 72px; height: 72px; border-radius: 20px;
+  background: var(--brand);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 60px var(--brand-glow), 0 0 120px rgba(232,80,10,.06);
+}
+.splash-mark svg { width: 38px; height: 38px }
 
-/* GRID */
-.grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;margin-bottom:12px}
-@media(max-width:960px){.grid-2{grid-template-columns:1fr}}
+.splash-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 7vw, 68px);
+  letter-spacing: 8px; color: #fff; line-height: 1;
+}
+.splash-tagline {
+  font-size: 10px; font-weight: 600; letter-spacing: 4px;
+  text-transform: uppercase; color: #333;
+}
+.splash-progress {
+  width: 100px; height: 2px;
+  background: #1a1a1a; border-radius: 2px; margin-top: 28px;
+  overflow: hidden;
+}
+.splash-bar {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--brand), #ff8050);
+  border-radius: 2px;
+  animation: bLoad 1.9s cubic-bezier(.16,1,.3,1) .25s both;
+}
+@keyframes bLoad { from{width:0} to{width:100%} }
 
-/* CARDS */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;animation:fadeUp 0.4s ease both}
-.card-header{display:flex;align-items:center;justify-content:space-between;padding:12px 17px;border-bottom:1px solid var(--border)}
-.card-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--text)}
-.card-meta{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
-.chart-wrap{padding:14px 17px 8px}
-.chart-area{width:100%;height:180px}
+/* ═══════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════ */
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg1);
+  border-right: 1px solid var(--b0);
+  display: flex; flex-direction: column;
+  z-index: 100;
+}
 
-/* METRIC TABS */
-.metric-tabs{display:flex;gap:1px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px}
-.metric-tab{padding:4px 11px;border-radius:5px;font-size:11px;font-weight:600;color:var(--text3);background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s}
-.metric-tab:hover{color:var(--text)}
-.metric-tab.active{background:var(--brand);color:#fff}
+.sidebar-logo {
+  padding: 22px 18px 18px;
+  border-bottom: 1px solid var(--b0);
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-mark {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: var(--brand);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px var(--brand-glow);
+}
+.logo-mark svg { width: 18px; height: 18px }
+.logo-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 2.5px; line-height: 1;
+}
+.logo-sub {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--t2); margin-top: 2px;
+}
 
-/* BARS */
-.bars{padding:12px 17px 14px;display:flex;flex-direction:column;gap:9px}
-.bar-row{display:flex;align-items:center;gap:9px}
-.bar-label{font-size:11px;font-weight:500;color:var(--text2);width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
-.bar-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
-.bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--brand),var(--brand3));transition:width 1s cubic-bezier(0.16,1,0.3,1)}
-.bar-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);width:80px;text-align:right;flex-shrink:0}
+.sidebar-nav {
+  flex: 1; padding: 12px 10px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.nav-section {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--t2); padding: 10px 8px 5px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 10px; border-radius: var(--r-sm);
+  font-size: 13px; font-weight: 500; color: var(--t1);
+  cursor: pointer; transition: all .15s;
+  border: none; background: transparent; width: 100%;
+  text-align: left; position: relative;
+}
+.nav-item:hover { background: rgba(255,255,255,.04); color: var(--t0) }
+.nav-item.active { background: var(--brand-lt); color: var(--t0) }
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 5px; bottom: 5px;
+  width: 3px; background: var(--brand); border-radius: 2px;
+}
+.nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; opacity: .6 }
+.nav-item.active .nav-icon { opacity: 1 }
 
-/* TABLE */
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse}
-thead tr{border-bottom:1px solid var(--border)}
-th{padding:9px 12px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);white-space:nowrap;cursor:pointer;user-select:none;transition:color 0.12s;background:var(--bg)}
-th:hover{color:var(--brand)}
-th.sorted{color:var(--brand)}
-td{padding:10px 12px;font-size:12px;font-weight:500;border-bottom:1px solid rgba(255,255,255,0.04);white-space:nowrap;transition:background 0.12s}
-tr:last-child td{border-bottom:none}
-tr:nth-child(even) td{background:rgba(255,255,255,0.015)}
-tr:hover td{background:rgba(232,80,10,0.04)!important}
-.mono{font-family:'DM Mono',monospace;font-size:12px;font-weight:500}
-.name-cell{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pill{display:inline-flex;align-items:center;font-size:8px;font-weight:800;padding:2px 7px;border-radius:20px;letter-spacing:.8px;text-transform:uppercase}
-.pill-green{background:var(--green-lt);color:var(--green)}
-.pill-yellow{background:var(--yellow-lt);color:var(--yellow)}
-.pill-red{background:var(--red-lt);color:var(--red)}
-.pill-gray{background:var(--surface2);color:var(--text3)}
-.pill-blue{background:rgba(232,80,10,0.12);color:var(--brand3)}
-.sort-icon{margin-left:2px;opacity:0.4;font-size:9px}
-th.sorted .sort-icon{opacity:1}
-.drill{background:rgba(232,80,10,0.08);border:1px solid rgba(232,80,10,0.2);color:var(--brand3);padding:4px 9px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.3px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s}
-.drill:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.sidebar-foot {
+  padding: 12px; border-top: 1px solid var(--b0);
+}
+.refresh-badge {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 11px; border-radius: var(--r-sm);
+  background: rgba(255,255,255,.03);
+  font-size: 11px; color: var(--t2);
+  font-family: 'DM Mono', monospace;
+}
+.dot-live {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 
-/* AD GRID */
-.ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;padding:14px 17px}
-.ad-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all 0.2s;position:relative;animation:fadeUp 0.4s ease both}
-.ad-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 10px 30px rgba(232,80,10,0.08)}
-.ad-thumb{width:100%;aspect-ratio:1.91/1;background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
-.ad-thumb-bg{width:100%;height:100%;background-size:cover;background-position:center;transition:transform 0.3s}
-.ad-card:hover .ad-thumb-bg{transform:scale(1.04)}
-.ad-thumb-empty{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:22px}
-.ad-thumb-empty span{font-size:10px;color:var(--text3)}
-.ad-rank{position:absolute;top:7px;left:7px;z-index:2;background:var(--brand);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;padding:3px 10px;border-radius:20px;box-shadow:0 2px 10px rgba(232,80,10,0.4)}
-.ad-info{padding:10px 12px;background:var(--bg2)}
-.ad-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ad-stats{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.ad-stat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 8px}
-.ad-stat-label{font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
-.ad-stat-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--text)}
-.ad-stat.primary{border-color:rgba(232,80,10,0.25);background:rgba(232,80,10,0.06)}
-.ad-stat.primary .ad-stat-val{color:var(--brand3)}
+/* ═══════════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════════ */
+.main { margin-left: var(--sidebar-w); min-height: 100vh }
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 54px;
+  background: rgba(13,16,24,.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--b0);
+  position: sticky; top: 0; z-index: 50;
+  gap: 10px; flex-wrap: wrap;
+}
+.breadcrumb { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; flex-shrink: 0 }
+.bc { color: var(--t2); cursor: pointer; transition: color .12s }
+.bc:hover { color: var(--brand) }
+.bc.cur { color: var(--t0); cursor: default }
+.bc-sep { color: var(--t2) }
 
-/* STATES */
-.state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:10px}
-.state-icon{font-size:28px}
-.state-title{font-size:14px;font-weight:600;color:var(--text2)}
-.state-sub{font-size:12px;color:var(--text3)}
-.spinner{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin 0.7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.error-bar{background:var(--red-lt);border:1px solid rgba(239,68,68,0.25);border-radius:var(--r);padding:11px 15px;color:var(--red);font-size:12px;font-weight:600;margin-bottom:14px}
-.period-label-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,80,10,0.08);border:1px solid rgba(232,80,10,0.18);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--brand3);margin-bottom:14px;font-family:'DM Mono',monospace}
+.topbar-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
+.period-group {
+  display: flex; gap: 1px;
+  background: var(--bg3); border: 1px solid var(--b0);
+  border-radius: var(--r-sm); padding: 2px;
+}
+.period-btn {
+  padding: 4px 12px; border-radius: 5px;
+  font-size: 11px; font-weight: 700; color: var(--t2);
+  background: transparent; border: none; cursor: pointer;
+  font-family: 'Outfit', sans-serif; transition: all .12s;
+}
+.period-btn:hover { color: var(--t0) }
+.period-btn.active { background: var(--brand); color: #fff }
 
-/* STAGGER */
-.kpi:nth-child(1){animation-delay:.02s}.kpi:nth-child(2){animation-delay:.05s}.kpi:nth-child(3){animation-delay:.08s}
-.kpi:nth-child(4){animation-delay:.11s}.kpi:nth-child(5){animation-delay:.14s}.kpi:nth-child(6){animation-delay:.17s}
-.ad-card:nth-child(1){animation-delay:.03s}.ad-card:nth-child(2){animation-delay:.06s}.ad-card:nth-child(3){animation-delay:.09s}
-.ad-card:nth-child(4){animation-delay:.12s}.ad-card:nth-child(5){animation-delay:.15s}.ad-card:nth-child(6){animation-delay:.18s}
+.custom-picker {
+  display: none; align-items: center; gap: 7px;
+  background: var(--bg3); border: 1px solid var(--b1);
+  border-radius: var(--r-sm); padding: 4px 10px;
+}
+.custom-picker label { font-size: 10px; font-weight: 700; color: var(--t2) }
+.custom-picker input[type=date] {
+  background: var(--bg2); border: 1px solid var(--b1);
+  border-radius: 5px; color: var(--t0);
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 3px 7px; outline: none; cursor: pointer;
+  color-scheme: dark;
+}
+.custom-picker input[type=date]:focus { border-color: var(--brand) }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 13px; border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none;
+  font-family: 'Outfit', sans-serif; transition: all .15s;
+}
+.btn-ghost { background: rgba(255,255,255,.04); color: var(--t1); border: 1px solid var(--b1) }
+.btn-ghost:hover { border-color: var(--brand); color: var(--brand) }
+.btn-primary { background: var(--brand); color: #fff }
+.btn-primary:hover { background: #c43d00 }
+.btn-sm { padding: 3px 9px; font-size: 11px }
+
+/* ═══════════════════════════════════════════════
+   PAGE CONTENT
+═══════════════════════════════════════════════ */
+.content { padding: 22px 24px; max-width: 1440px }
+
+/* ═══════════════════════════════════════════════
+   PERIOD BADGE
+═══════════════════════════════════════════════ */
+.period-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--brand-lt); border: 1px solid var(--brand-bd);
+  border-radius: 20px; padding: 4px 13px;
+  font-size: 10px; font-weight: 700; letter-spacing: .5px;
+  color: #ff8050; margin-bottom: 16px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════
+   KPI CARDS — LINHA 1
+═══════════════════════════════════════════════ */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px; margin-bottom: 16px;
+}
+@media(max-width:1280px) { .kpi-row { grid-template-columns: repeat(3,1fr) } }
+
+.kpi {
+  background: var(--bg2); border: 1px solid var(--b0);
+  border-radius: var(--r-lg); padding: 16px 18px;
+  transition: all .2s; position: relative; overflow: hidden;
+  animation: fadeUp .5s ease both;
+}
+.kpi::after {
+  content: '';
+  position: absolute; bottom: 0; left: 20%; right: 20%; height: 1px;
+  background: var(--brand); opacity: 0; transition: opacity .2s;
+}
+.kpi:hover { border-color: var(--b2); background: var(--bg3); transform: translateY(-2px) }
+.kpi:hover::after { opacity: .6 }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+.kpi-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px }
+.kpi-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--t2) }
+.kpi-icon { font-size: 14px; opacity: .5 }
+.kpi-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; letter-spacing: 1px;
+  color: var(--t0); line-height: 1;
+}
+.kpi-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 6px }
+.kpi-sub { font-size: 10px; color: var(--t2); font-family: 'DM Mono', monospace }
+.delta {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 20px;
+}
+.delta-up { background: var(--green-lt); color: var(--green) }
+.delta-dn { background: var(--red-lt); color: var(--red) }
+.delta-flat { background: rgba(255,255,255,.05); color: var(--t2) }
+
+/* ═══════════════════════════════════════════════
+   SKELETON
+═══════════════════════════════════════════════ */
+.skel {
+  background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skel-kpi { height: 88px; border-radius: var(--r-lg) }
+.skel-card { border-radius: var(--r-lg) }
+
+/* ═══════════════════════════════════════════════
+   OBJETIVO BLOCKS — LINHA 2
+═══════════════════════════════════════════════ */
+.obj-blocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px; margin-bottom: 16px;
+}
+.obj-block {
+  background: var(--bg2); border: 1px solid var(--b0);
+  border-radius: var(--r-lg); padding: 15px 16px;
+  animation: fadeUp .45s ease both;
+  border-left: 3px solid transparent;
+  transition: all .2s;
+}
+.obj-block:hover { border-color: var(--b2); transform: translateY(-2px) }
+.obj-block[data-obj="captacao"] { border-left-color: var(--c-captacao) }
+.obj-block[data-obj="vendas"]   { border-left-color: var(--c-vendas) }
+.obj-block[data-obj="engaj"]    { border-left-color: var(--c-engaj) }
+.obj-block[data-obj="trafego"]  { border-left-color: var(--c-trafego) }
+.obj-block[data-obj="outros"]   { border-left-color: var(--c-outros) }
+
+.obj-type {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+}
+.obj-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0 }
+.obj-type-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--t2) }
+.obj-invest { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .5px; color: var(--t0); margin-bottom: 2px }
+.obj-main-row { display: flex; align-items: baseline; gap: 6px }
+.obj-main-val { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; color: var(--t0) }
+.obj-main-label { font-size: 10px; color: var(--t2) }
+.obj-metrics { display: flex; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--b0) }
+.obj-m { flex: 1 }
+.obj-m-l { font-size: 8px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--t2); margin-bottom: 2px }
+.obj-m-v { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--t0) }
+
+/* ═══════════════════════════════════════════════
+   GRID LAYOUTS
+═══════════════════════════════════════════════ */
+.grid-3-1 { display: grid; grid-template-columns: 1.7fr 1fr; gap: 12px; margin-bottom: 12px }
+.grid-2   { display: grid; grid-template-columns: 1fr 1fr;   gap: 12px; margin-bottom: 12px }
+@media(max-width:960px) { .grid-3-1, .grid-2 { grid-template-columns: 1fr } }
+
+/* ═══════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════ */
+.card {
+  background: var(--bg2); border: 1px solid var(--b0);
+  border-radius: var(--r-lg); overflow: hidden;
+  margin-bottom: 12px; animation: fadeUp .4s ease both;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 18px; border-bottom: 1px solid var(--b0);
+}
+.card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px; letter-spacing: 2px; color: var(--t0);
+}
+.card-meta { font-size: 10px; color: var(--t2); font-family: 'DM Mono', monospace }
+
+/* ═══════════════════════════════════════════════
+   LINE CHART
+═══════════════════════════════════════════════ */
+.chart-wrap { padding: 14px 18px 8px }
+.chart-area { width: 100%; height: 175px }
+
+.metric-tabs {
+  display: flex; gap: 1px;
+  background: var(--bg0); border: 1px solid var(--b0);
+  border-radius: var(--r-sm); padding: 2px;
+}
+.metric-tab {
+  padding: 4px 11px; border-radius: 5px;
+  font-size: 11px; font-weight: 600; color: var(--t2);
+  background: transparent; border: none; cursor: pointer;
+  font-family: 'Outfit', sans-serif; transition: all .12s;
+}
+.metric-tab:hover { color: var(--t0) }
+.metric-tab.active { background: var(--brand); color: #fff }
+
+/* ═══════════════════════════════════════════════
+   PIE CHART (SVG manual)
+═══════════════════════════════════════════════ */
+.pie-wrap { padding: 16px 18px; display: flex; gap: 18px; align-items: center }
+.pie-svg { flex-shrink: 0 }
+.pie-legend { display: flex; flex-direction: column; gap: 8px; flex: 1 }
+.pie-leg-row { display: flex; align-items: center; justify-content: space-between; gap: 8px }
+.pie-leg-left { display: flex; align-items: center; gap: 7px }
+.pie-leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0 }
+.pie-leg-name { font-size: 11px; font-weight: 500; color: var(--t1) }
+.pie-leg-right { text-align: right }
+.pie-leg-val { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--t0); display: block }
+.pie-leg-pct { font-size: 9px; color: var(--t2); font-family: 'DM Mono', monospace }
+
+/* ═══════════════════════════════════════════════
+   BAR CHART
+═══════════════════════════════════════════════ */
+.bars { padding: 12px 18px 14px; display: flex; flex-direction: column; gap: 9px }
+.bar-row { display: flex; align-items: center; gap: 9px }
+.bar-lbl { font-size: 11px; font-weight: 500; color: var(--t1); width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0 }
+.bar-track { flex: 1; height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden }
+.bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--brand), #ff8050); transition: width 1s cubic-bezier(.16,1,.3,1) }
+.bar-val { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--t1); width: 80px; text-align: right; flex-shrink: 0 }
+
+/* ═══════════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════════ */
+.table-wrap { overflow-x: auto }
+table { width: 100%; border-collapse: collapse }
+thead tr { border-bottom: 1px solid var(--b1) }
+th {
+  padding: 9px 13px; text-align: left;
+  font-size: 9px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--t2);
+  white-space: nowrap; cursor: pointer; user-select: none;
+  background: var(--bg1); transition: color .12s;
+}
+th:hover { color: var(--brand) }
+th.sorted { color: var(--brand) }
+td {
+  padding: 10px 13px; font-size: 12px; font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,.03);
+  white-space: nowrap; transition: background .1s;
+}
+tr:last-child td { border-bottom: none }
+tr:nth-child(even) td { background: rgba(255,255,255,.012) }
+tr:hover td { background: rgba(232,80,10,0.04) !important }
+.mono { font-family: 'DM Mono', monospace; font-size: 12px }
+.name-cell { max-width: 210px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.sort-icon { margin-left: 2px; opacity: .4; font-size: 9px }
+th.sorted .sort-icon { opacity: 1 }
+
+/* ═══════════════════════════════════════════════
+   PILLS & BADGES
+═══════════════════════════════════════════════ */
+.pill {
+  display: inline-flex; align-items: center;
+  font-size: 8px; font-weight: 800;
+  padding: 2px 7px; border-radius: 20px;
+  letter-spacing: .8px; text-transform: uppercase;
+}
+.pill-green  { background: var(--green-lt); color: var(--green) }
+.pill-yellow { background: var(--yellow-lt); color: var(--yellow) }
+.pill-red    { background: var(--red-lt); color: var(--red) }
+.pill-gray   { background: rgba(255,255,255,.06); color: var(--t2) }
+
+/* Badges de objetivo */
+.obj-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 8px; font-weight: 700; padding: 2px 7px;
+  border-radius: 20px; letter-spacing: .5px; text-transform: uppercase;
+}
+.obj-pill-cap  { background: rgba(59,130,246,.12);  color: #60a5fa }
+.obj-pill-vnd  { background: rgba(16,185,129,.12);  color: #34d399 }
+.obj-pill-eng  { background: rgba(245,158,11,.12);  color: #fbbf24 }
+.obj-pill-trf  { background: rgba(139,92,246,.12);  color: #a78bfa }
+.obj-pill-etc  { background: rgba(255,255,255,.06); color: var(--t2) }
+
+.drill {
+  background: var(--brand-lt); border: 1px solid var(--brand-bd);
+  color: #ff8050; padding: 4px 9px; border-radius: 6px;
+  font-size: 10px; font-weight: 700; cursor: pointer;
+  font-family: 'Outfit', sans-serif; transition: all .12s;
+}
+.drill:hover { background: var(--brand); color: #fff; border-color: var(--brand) }
+
+/* ═══════════════════════════════════════════════
+   AD GRID
+═══════════════════════════════════════════════ */
+.ad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+  gap: 12px; padding: 14px 18px;
+}
+.ad-card {
+  background: var(--bg3); border: 1px solid var(--b0);
+  border-radius: var(--r-lg); overflow: hidden;
+  transition: all .2s; position: relative;
+  animation: fadeUp .4s ease both;
+}
+.ad-card:hover { border-color: var(--b2); transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,.3) }
+
+.ad-badge {
+  position: absolute; top: 8px; left: 8px; z-index: 2;
+  font-family: 'Bebas Neue', sans-serif; font-size: 11px;
+  letter-spacing: 1px; padding: 3px 10px; border-radius: 20px;
+}
+.ad-badge.champion  { background: #E8500A; color: #fff; box-shadow: 0 2px 10px rgba(232,80,10,.4) }
+.ad-badge.scale     { background: var(--green); color: #fff; box-shadow: 0 2px 10px rgba(34,197,94,.3) }
+.ad-badge.watch     { background: var(--yellow); color: #000 }
+.ad-badge.rank      { background: rgba(0,0,0,.7); backdrop-filter: blur(8px); color: var(--t1) }
+
+.ad-thumb { width: 100%; aspect-ratio: 1.91/1; background: var(--bg0); overflow: hidden; position: relative }
+.ad-thumb-bg { width: 100%; height: 100%; background-size: cover; background-position: center; transition: transform .3s }
+.ad-card:hover .ad-thumb-bg { transform: scale(1.04) }
+.ad-thumb-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; height: 100%; font-size: 22px }
+.ad-thumb-empty span { font-size: 10px; color: var(--t2) }
+
+.ad-info { padding: 11px 13px; background: var(--bg2) }
+.ad-name { font-size: 11px; font-weight: 600; color: var(--t0); margin-bottom: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.ad-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 5px }
+.ad-stat { background: var(--bg3); border: 1px solid var(--b0); border-radius: 6px; padding: 6px 8px }
+.ad-stat.hi { border-color: rgba(232,80,10,.22); background: rgba(232,80,10,.06) }
+.ad-stat-l { font-size: 8px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--t2); margin-bottom: 2px }
+.ad-stat-v { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--t0) }
+.ad-stat.hi .ad-stat-v { color: #ff8050 }
+
+/* ═══════════════════════════════════════════════
+   STATES
+═══════════════════════════════════════════════ */
+.state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 10px }
+.state-sub { font-size: 12px; color: var(--t2) }
+.spinner { width: 26px; height: 26px; border: 2px solid var(--b1); border-top-color: var(--brand); border-radius: 50%; animation: spin .7s linear infinite }
+@keyframes spin { to{transform:rotate(360deg)} }
+.err-bar { background: var(--red-lt); border: 1px solid rgba(239,68,68,.2); border-radius: var(--r); padding: 11px 15px; color: var(--red); font-size: 12px; font-weight: 600; margin-bottom: 14px }
+
+/* ═══════════════════════════════════════════════
+   STAGGER HELPERS
+═══════════════════════════════════════════════ */
+.kpi:nth-child(1){animation-delay:.02s} .kpi:nth-child(2){animation-delay:.05s}
+.kpi:nth-child(3){animation-delay:.08s} .kpi:nth-child(4){animation-delay:.11s}
+.kpi:nth-child(5){animation-delay:.14s} .kpi:nth-child(6){animation-delay:.17s}
+.obj-block:nth-child(1){animation-delay:.03s} .obj-block:nth-child(2){animation-delay:.06s}
+.obj-block:nth-child(3){animation-delay:.09s} .obj-block:nth-child(4){animation-delay:.12s}
 </style>
 </head>
 <body>
 
-<!-- SPLASH -->
+<!-- ══ SPLASH ══ -->
 <div id="splash">
-  <div class="splash-logo">
+  <div class="splash-inner">
     <div class="splash-mark">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 24 24" fill="none">
         <path d="M5 17V8l5 6 5-6v9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <div class="splash-name">MÉTODO PREPARA</div>
-    <div class="splash-sub">Meta Ads Dashboard</div>
-    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    <div class="splash-tagline">Meta Ads Dashboard</div>
+    <div class="splash-progress"><div class="splash-bar"></div></div>
   </div>
 </div>
 
-<!-- SIDEBAR -->
+<!-- ══ SIDEBAR ══ -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-row">
-      <div class="logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 17V8l5 6 5-6v9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div>
-        <div class="logo-text">PREPARA</div>
-        <div class="logo-sub">Meta Ads</div>
-      </div>
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M5 17V8l5 6 5-6v9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">PREPARA</div>
+      <div class="logo-sub">Meta Ads</div>
     </div>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-label">Navegação</div>
+    <div class="nav-section">Navegação</div>
     <button class="nav-item active" onclick="setView('overview')" id="nav-overview">
       <span class="nav-icon">⬡</span> Visão Geral
     </button>
@@ -246,19 +610,19 @@ th.sorted .sort-icon{opacity:1}
   </nav>
   <div class="sidebar-foot">
     <div class="refresh-badge">
-      <div class="live-dot"></div>
+      <div class="dot-live"></div>
       <span id="last-update">—</span>
     </div>
   </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ══ MAIN ══ -->
 <main class="main">
   <div class="topbar">
     <div class="breadcrumb" id="breadcrumb">
-      <span class="bc-item active">Visão Geral</span>
+      <span class="bc cur">Visão Geral</span>
     </div>
-    <div class="topbar-right">
+    <div class="topbar-r">
       <div class="period-group">
         <button class="period-btn" data-days="7">7d</button>
         <button class="period-btn active" data-days="14">14d</button>
@@ -267,225 +631,255 @@ th.sorted .sort-icon{opacity:1}
         <button class="period-btn" data-days="90">90d</button>
         <button class="period-btn" data-days="custom">Custom</button>
       </div>
-      <div class="custom-picker" id="custom-picker">
+      <div class="custom-picker" id="cpicker">
         <label>DE</label><input type="date" id="date-since">
         <label>ATÉ</label><input type="date" id="date-until">
-        <button class="btn btn-primary btn-sm" onclick="applyCustomPeriod()">Aplicar</button>
+        <button class="btn btn-primary btn-sm" onclick="applyCustom()">OK</button>
       </div>
-      <button class="btn btn-outline" onclick="loadAll()">↺ Atualizar</button>
+      <button class="btn btn-ghost" onclick="loadAll()">↺ Atualizar</button>
     </div>
   </div>
 
-  <div class="content" id="page-content">
+  <div class="content" id="page">
     <div class="state"><div class="spinner"></div><div class="state-sub">Inicializando...</div></div>
   </div>
 </main>
 
 <script>
-// SPLASH
-window.addEventListener('load', () => {
-  setTimeout(() => document.getElementById('splash').classList.add('out'), 2200);
-});
-
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
 const S = {
   period:14, customSince:null, customUntil:null,
-  view:'overview', campaigns:[], allInsights:[], prevInsights:[],
-  campaignInsights:{}, prevCampaignInsights:{}, daily:[],
+  view:'overview',
+  campaigns:[], allInsights:[], prevInsights:[],
+  campMap:{}, prevCampMap:{}, daily:[],
   ads:[], adInsights:{},
-  selectedCampaign:null, selectedCampaignName:null, selectedCampaignObjective:null,
-  sortCol:'spend', sortDir:'desc', chartMetric:'spend', loading:false,
+  selCamp:null, selCampName:null, selCampObj:null,
+  sortCol:'spend', sortDir:'desc',
+  chartMetric:'spend', loading:false,
 };
 
 const API = '/api/meta';
 
-function getDates(days, offset=0) {
-  if (S.customSince && S.customUntil && offset===0) return {since:S.customSince, until:S.customUntil};
-  const until = new Date();
-  until.setDate(until.getDate() - offset*days);
-  const since = new Date(until);
-  since.setDate(since.getDate() - days);
-  if (offset>0) until.setDate(until.getDate()-1);
-  const fmt = d => d.toISOString().split('T')[0];
-  return {since:fmt(since), until:fmt(until)};
+/* ── utils ── */
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmtR = v => { v=parseFloat(v||0); return isNaN(v)?'—':'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) };
+const fmtN = v => { v=parseInt(v||0); return isNaN(v)?'—':v.toLocaleString('pt-BR') };
+const fmtK = v => { if(v>=1e6) return (v/1e6).toFixed(1)+'M'; if(v>=1e3) return (v/1e3).toFixed(1)+'K'; return Math.round(v).toString() };
+const statusPill = s => ({'ACTIVE':'pill-green','PAUSED':'pill-yellow','ARCHIVED':'pill-gray','DELETED':'pill-red'}[s?.toUpperCase()]||'pill-gray');
+const fmtStatus = s => ({'ACTIVE':'Ativo','PAUSED':'Pausado','ARCHIVED':'Arquivado','DELETED':'Deletado'}[s?.toUpperCase()]||s);
+
+/* ── objective helpers ── */
+function objType(objective) {
+  const o = (objective||'').toUpperCase();
+  if (o.includes('SALES')||o.includes('CONVERSIONS')||o==='OUTCOME_SALES') return 'vendas';
+  if (o.includes('LEADS')||o.includes('LEAD')||o==='OUTCOME_LEADS') return 'captacao';
+  if (o.includes('ENGAGEMENT')||o==='OUTCOME_ENGAGEMENT') return 'engaj';
+  if (o.includes('TRAFFIC')||o.includes('LINK_CLICKS')||o==='OUTCOME_TRAFFIC') return 'trafego';
+  return 'outros';
 }
 
-async function apiFetch(endpoint, extra={}) {
-  const dates = extra.since ? {since:extra.since, until:extra.until} : getDates(S.period);
-  const p = new URLSearchParams({endpoint, ...dates, ...extra});
-  const res = await fetch(`${API}?${p}`);
-  const json = await res.json();
-  if (json.error) throw new Error(json.error);
-  return json;
+const objLabel = t => ({'captacao':'Captação','vendas':'Vendas','engaj':'Engajamento','trafego':'Tráfego','outros':'Outros'}[t]||t);
+const objColor = t => ({'captacao':'#3b82f6','vendas':'#10b981','engaj':'#f59e0b','trafego':'#8b5cf6','outros':'#6b7280'}[t]||'#6b7280');
+const objPillClass = t => ({'captacao':'obj-pill-cap','vendas':'obj-pill-vnd','engaj':'obj-pill-eng','trafego':'obj-pill-trf','outros':'obj-pill-etc'}[t]||'obj-pill-etc');
+
+const objMainLabel = t => ({'captacao':'Leads','vendas':'Compras','engaj':'Engajamentos','trafego':'Cliques','outros':'Resultados'}[t]||'Resultados');
+const objCostLabel = t => ({'captacao':'CPL','vendas':'CPA','engaj':'CPE','trafego':'CPC','outros':'CPR'}[t]||'CPR');
+
+function fmtObjBadge(objective) {
+  return {'OUTCOME_TRAFFIC':'Tráfego','OUTCOME_LEADS':'Leads','OUTCOME_SALES':'Vendas','OUTCOME_AWARENESS':'Alcance','OUTCOME_ENGAGEMENT':'Engaj.','LINK_CLICKS':'Tráfego','LEAD_GENERATION':'Leads','CONVERSIONS':'Conversões','REACH':'Alcance'}[objective]||'';
 }
 
-async function apiFetchPrev(endpoint, extra={}) {
-  const {since, until} = getDates(S.period, 1);
-  const p = new URLSearchParams({endpoint, since, until, ...extra});
-  const res = await fetch(`${API}?${p}`);
-  const json = await res.json();
-  if (json.error) return {data:[]};
-  return json;
-}
-
-async function loadAll() {
-  if (S.loading) return;
-  S.loading = true; showLoading();
-  try {
-    const [campData, insData, insDataPrev, dailyData] = await Promise.all([
-      apiFetch('campaigns'),
-      apiFetch('all_campaigns_insights'),
-      apiFetchPrev('all_campaigns_insights'),
-      apiFetch('daily'),
-    ]);
-    S.campaigns = campData.data||[];
-    S.allInsights = insData.data||[];
-    S.prevInsights = insDataPrev.data||[];
-    S.campaignInsights = {}; S.allInsights.forEach(i=>{S.campaignInsights[i.campaign_id]=i});
-    S.prevCampaignInsights = {}; S.prevInsights.forEach(i=>{S.prevCampaignInsights[i.campaign_id]=i});
-    S.daily = (dailyData.data||[]).sort((a,b)=>a.date_start.localeCompare(b.date_start));
-    S.loading = false;
-    updateLastUpdate();
-    renderView();
-  } catch(err) {
-    S.loading = false;
-    showError(err.message);
+/* ── result extraction ── */
+function getMainResult(ins, type) {
+  if (!ins.actions) return 0;
+  if (type==='vendas') {
+    const p = ins.actions.find(a=>a.action_type==='offsite_conversion.fb_pixel_purchase');
+    if (p) return parseInt(p.value||0);
   }
-}
-
-async function loadAds(campaignId) {
-  showLoading();
-  try {
-    const adsData = await apiFetch('ads', {id:campaignId});
-    const ads = adsData.data||[];
-    const insResults = await Promise.all(
-      ads.map(ad => apiFetch('ad_insights', {id:ad.id})
-        .then(r=>({id:ad.id, ins:r.data?.[0]||{}}))
-        .catch(()=>({id:ad.id, ins:{}})))
-    );
-    S.adInsights = {};
-    insResults.forEach(r=>{S.adInsights[r.id]=r.ins});
-    S.ads = ads;
-    renderView();
-  } catch(err) { showError(err.message); }
-}
-
-document.querySelectorAll('.period-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    if (btn.dataset.days==='custom') {
-      const picker = document.getElementById('custom-picker');
-      picker.style.display = 'flex';
-      const {since, until} = getDates(S.period);
-      document.getElementById('date-since').value = S.customSince||since;
-      document.getElementById('date-until').value = S.customUntil||until;
-    } else {
-      document.getElementById('custom-picker').style.display = 'none';
-      S.period = parseInt(btn.dataset.days);
-      S.customSince = null; S.customUntil = null;
-      loadAll();
-    }
-  });
-});
-
-function applyCustomPeriod() {
-  const since = document.getElementById('date-since').value;
-  const until = document.getElementById('date-until').value;
-  if (!since||!until) {alert('Preencha as duas datas.');return}
-  if (since>until) {alert('Data inicial não pode ser maior que a final.');return}
-  S.period = Math.round((new Date(until)-new Date(since))/(1000*60*60*24))+1||1;
-  S.customSince=since; S.customUntil=until;
-  loadAll();
-}
-
-function setView(view, campaignId, campaignName, campaignObjective) {
-  S.view = view;
-  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  document.getElementById(view==='campaign-detail'?'nav-ads':'nav-'+view)?.classList.add('active');
-  if (view==='campaign-detail') {
-    S.selectedCampaign=campaignId; S.selectedCampaignName=campaignName; S.selectedCampaignObjective=campaignObjective;
-    loadAds(campaignId); updateBreadcrumb(); return;
+  if (type==='captacao') {
+    const l = ins.actions.find(a=>a.action_type==='lead'||a.action_type==='offsite_conversion.fb_pixel_lead');
+    if (l) return parseInt(l.value||0);
   }
-  renderView();
+  if (type==='engaj') {
+    const e = ins.actions.find(a=>a.action_type==='post_engagement'||a.action_type==='page_engagement');
+    if (e) return parseInt(e.value||0);
+  }
+  if (type==='trafego') return parseInt(ins.clicks||0);
+  // fallback
+  const purchase = ins.actions.find(a=>a.action_type==='offsite_conversion.fb_pixel_purchase');
+  if (purchase) return parseInt(purchase.value||0);
+  const lead = ins.actions.find(a=>a.action_type==='lead'||a.action_type==='offsite_conversion.fb_pixel_lead');
+  if (lead) return parseInt(lead.value||0);
+  return ins.actions.reduce((s,a)=>s+parseInt(a.value||0),0);
 }
 
-function renderView() {
-  updateBreadcrumb();
-  const el = document.getElementById('page-content');
-  if (S.view==='overview') el.innerHTML = renderOverview();
-  else if (S.view==='campaigns') el.innerHTML = renderCampaignsView();
-  else if (S.view==='ads') el.innerHTML = renderAdsView();
-  else if (S.view==='campaign-detail') el.innerHTML = renderCampaignDetail();
-  bindChartTabs(); animateBars();
-}
-
-function periodLabel() {
-  if (S.customSince&&S.customUntil) return `${S.customSince} → ${S.customUntil}`;
-  return `últimos ${S.period} dias`;
-}
-
-function agg(items) {
-  let spend=0,impressions=0,clicks=0,reach=0,results=0,ctrSum=0,cpcSum=0,cpmSum=0,freq=0,n=0;
-  items.forEach(ins=>{
-    spend+=parseFloat(ins.spend||0); impressions+=parseInt(ins.impressions||0);
-    clicks+=parseInt(ins.clicks||0); reach+=parseInt(ins.reach||0);
-    results+=getResults(ins); ctrSum+=parseFloat(ins.ctr||0);
-    cpcSum+=parseFloat(ins.cpc||0); cpmSum+=parseFloat(ins.cpm||0);
-    freq+=parseFloat(ins.frequency||0); n++;
-  });
-  return {spend,impressions,clicks,reach,results,
-    ctr:n?ctrSum/n:0, cpc:n?cpcSum/n:0, cpm:n?cpmSum/n:0, frequency:n?freq/n:0, n};
-}
-
-function getResults(ins) {
+function getResultsAny(ins) {
   if (!ins.actions) return 0;
   const prio=['offsite_conversion.fb_pixel_purchase','lead','offsite_conversion.fb_pixel_lead','link_click'];
   for (const k of prio) { const f=ins.actions.find(a=>a.action_type===k); if(f) return parseInt(f.value||0); }
   return ins.actions.reduce((s,a)=>s+parseInt(a.value||0),0);
 }
 
-function getResultType(objective) {
-  const obj=(objective||'').toUpperCase();
-  if (obj.includes('SALES')||obj.includes('CONVERSIONS')||obj==='OUTCOME_SALES') return 'sales';
-  if (obj.includes('LEADS')||obj.includes('LEAD')||obj==='OUTCOME_LEADS') return 'leads';
-  return 'results';
+function agg(items) {
+  let spend=0,impressions=0,clicks=0,reach=0,results=0,ctrS=0,cpcS=0,cpmS=0,freqS=0,n=0;
+  items.forEach(ins=>{
+    spend+=parseFloat(ins.spend||0); impressions+=parseInt(ins.impressions||0);
+    clicks+=parseInt(ins.clicks||0); reach+=parseInt(ins.reach||0);
+    results+=getResultsAny(ins);
+    ctrS+=parseFloat(ins.ctr||0); cpcS+=parseFloat(ins.cpc||0);
+    cpmS+=parseFloat(ins.cpm||0); freqS+=parseFloat(ins.frequency||0); n++;
+  });
+  return {spend,impressions,clicks,reach,results,
+    ctr:n?ctrS/n:0, cpc:n?cpcS/n:0, cpm:n?cpmS/n:0, frequency:n?freqS/n:0, n};
 }
 
-function getResultLabel(objective) {
-  const t=getResultType(objective);
-  if (t==='sales') return 'Vendas';
-  if (t==='leads') return 'Leads';
-  return 'Resultados';
+function delta(c,p) { if(!p||p===0) return null; return ((c-p)/p)*100; }
+function deltaHTML(c,p,inv=false) {
+  const d=delta(c,p); if(d===null) return '';
+  const good = inv?d<0:d>0;
+  const cls = Math.abs(d)<.5?'delta-flat':good?'delta-up':'delta-dn';
+  const arr = Math.abs(d)<.5?'→':d>0?'↑':'↓';
+  return `<span class="delta ${cls}">${arr} ${d>0?'+':''}${d.toFixed(1)}%</span>`;
 }
 
-function getResultsFromIns(ins, objective) {
-  if (!ins.actions) return 0;
-  const type=getResultType(objective||'');
-  if (type==='sales') { const p=ins.actions.find(a=>a.action_type==='offsite_conversion.fb_pixel_purchase'); if(p) return parseInt(p.value||0); }
-  if (type==='leads') { const l=ins.actions.find(a=>a.action_type==='lead'||a.action_type==='offsite_conversion.fb_pixel_lead'); if(l) return parseInt(l.value||0); }
-  const purchase=ins.actions.find(a=>a.action_type==='offsite_conversion.fb_pixel_purchase');
-  if (purchase) return parseInt(purchase.value||0);
-  const lead=ins.actions.find(a=>a.action_type==='lead'||a.action_type==='offsite_conversion.fb_pixel_lead');
-  if (lead) return parseInt(lead.value||0);
-  return ins.actions.reduce((s,a)=>s+parseInt(a.value||0),0);
+/* ── dates ── */
+function getDates(days,offset=0) {
+  if(S.customSince&&S.customUntil&&offset===0) return {since:S.customSince,until:S.customUntil};
+  const until=new Date(); until.setDate(until.getDate()-offset*days);
+  const since=new Date(until); since.setDate(since.getDate()-days);
+  if(offset>0) until.setDate(until.getDate()-1);
+  const fmt=d=>d.toISOString().split('T')[0];
+  return {since:fmt(since),until:fmt(until)};
 }
 
-function delta(curr,prev) { if(!prev||prev===0) return null; return ((curr-prev)/prev)*100; }
-
-function deltaHTML(curr,prev,invert=false) {
-  const d=delta(curr,prev); if(d===null) return '';
-  const isGood=invert?d<0:d>0;
-  const cls=Math.abs(d)<0.5?'delta-flat':isGood?'delta-up':'delta-down';
-  const arrow=Math.abs(d)<0.5?'→':d>0?'↑':'↓';
-  return `<span class="kpi-delta ${cls}">${arrow} ${d>0?'+':''}${d.toFixed(1)}%</span>`;
+async function apiFetch(endpoint,extra={}) {
+  const dates=extra.since?{since:extra.since,until:extra.until}:getDates(S.period);
+  const p=new URLSearchParams({endpoint,...dates,...extra});
+  const res=await fetch(`${API}?${p}`);
+  const json=await res.json();
+  if(json.error) throw new Error(json.error);
+  return json;
+}
+async function apiFetchPrev(endpoint,extra={}) {
+  const {since,until}=getDates(S.period,1);
+  const p=new URLSearchParams({endpoint,since,until,...extra});
+  const res=await fetch(`${API}?${p}`);
+  const json=await res.json();
+  if(json.error) return {data:[]};
+  return json;
 }
 
+/* ══════════════════════════════════════════════
+   LOAD
+══════════════════════════════════════════════ */
+async function loadAll() {
+  if(S.loading) return;
+  S.loading=true; showSkeleton();
+  try {
+    const [campData,insData,insDataPrev,dailyData] = await Promise.all([
+      apiFetch('campaigns'),
+      apiFetch('all_campaigns_insights'),
+      apiFetchPrev('all_campaigns_insights'),
+      apiFetch('daily'),
+    ]);
+    S.campaigns=campData.data||[];
+    S.allInsights=insData.data||[];
+    S.prevInsights=insDataPrev.data||[];
+    S.campMap={}; S.allInsights.forEach(i=>{S.campMap[i.campaign_id]=i});
+    S.prevCampMap={}; S.prevInsights.forEach(i=>{S.prevCampMap[i.campaign_id]=i});
+    S.daily=(dailyData.data||[]).sort((a,b)=>a.date_start.localeCompare(b.date_start));
+    S.loading=false; updateLastUpdate(); renderView();
+  } catch(err) { S.loading=false; showError(err.message); }
+}
+
+async function loadAds(campId) {
+  showLoading();
+  try {
+    const adsData=await apiFetch('ads',{id:campId});
+    const ads=adsData.data||[];
+    const insResults=await Promise.all(
+      ads.map(ad=>apiFetch('ad_insights',{id:ad.id})
+        .then(r=>({id:ad.id,ins:r.data?.[0]||{}}))
+        .catch(()=>({id:ad.id,ins:{}})))
+    );
+    S.adInsights={};
+    insResults.forEach(r=>{S.adInsights[r.id]=r.ins});
+    S.ads=ads; renderView();
+  } catch(err) { showError(err.message); }
+}
+
+/* ══════════════════════════════════════════════
+   PERIOD BUTTONS
+══════════════════════════════════════════════ */
+document.querySelectorAll('.period-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    if(btn.dataset.days==='custom') {
+      const pk=document.getElementById('cpicker');
+      pk.style.display='flex';
+      const {since,until}=getDates(S.period);
+      document.getElementById('date-since').value=S.customSince||since;
+      document.getElementById('date-until').value=S.customUntil||until;
+    } else {
+      document.getElementById('cpicker').style.display='none';
+      S.period=parseInt(btn.dataset.days);
+      S.customSince=null; S.customUntil=null;
+      loadAll();
+    }
+  });
+});
+
+function applyCustom() {
+  const s=document.getElementById('date-since').value;
+  const u=document.getElementById('date-until').value;
+  if(!s||!u){alert('Preencha as datas.');return}
+  if(s>u){alert('Data inicial não pode ser maior.');return}
+  S.period=Math.round((new Date(u)-new Date(s))/(86400000))+1||1;
+  S.customSince=s; S.customUntil=u; loadAll();
+}
+
+/* ══════════════════════════════════════════════
+   VIEW ROUTING
+══════════════════════════════════════════════ */
+function setView(view,campId,campName,campObj) {
+  S.view=view;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById(view==='campaign-detail'?'nav-ads':'nav-'+view)?.classList.add('active');
+  if(view==='campaign-detail') {
+    S.selCamp=campId; S.selCampName=campName; S.selCampObj=campObj;
+    loadAds(campId); updateBreadcrumb(); return;
+  }
+  renderView();
+}
+
+function renderView() {
+  updateBreadcrumb();
+  const el=document.getElementById('page');
+  if(S.view==='overview')         el.innerHTML=renderOverview();
+  else if(S.view==='campaigns')   el.innerHTML=renderCampaigns();
+  else if(S.view==='ads')         el.innerHTML=renderAds();
+  else if(S.view==='campaign-detail') el.innerHTML=renderCampaignDetail();
+  bindChartTabs(); animateBars();
+}
+
+function periodLabel() {
+  if(S.customSince&&S.customUntil) return `${S.customSince} → ${S.customUntil}`;
+  return `últimos ${S.period} dias`;
+}
+
+/* ══════════════════════════════════════════════
+   OVERVIEW
+══════════════════════════════════════════════ */
 function renderOverview() {
   const curr=agg(S.allInsights), prev=agg(S.prevInsights);
   return `
-    <div class="period-label-badge">📅 ${periodLabel()}</div>
+    <div class="period-badge">📅 ${periodLabel()}</div>
     ${renderKPIs(curr,prev)}
-    <div class="grid-2">
+    ${renderObjBlocks()}
+    <div class="grid-3-1">
       <div class="card">
         <div class="card-header">
           <span class="card-title">EVOLUÇÃO DIÁRIA</span>
@@ -499,67 +893,213 @@ function renderOverview() {
         <div class="chart-wrap">${renderLineChart()}</div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">GASTO POR CAMPANHA</span><span class="card-meta">Top 8</span></div>
-        ${renderBarChart()}
+        <div class="card-header">
+          <span class="card-title">VERBA POR OBJETIVO</span>
+          <span class="card-meta">distribuição %</span>
+        </div>
+        ${renderPieChart()}
       </div>
     </div>
     <div class="card">
-      <div class="card-header"><span class="card-title">CAMPANHAS</span><span class="card-meta">${S.allInsights.length} com dados</span></div>
+      <div class="card-header">
+        <span class="card-title">CAMPANHAS</span>
+        <span class="card-meta">${S.allInsights.length} ativas no período</span>
+      </div>
       ${renderCampaignTable(true)}
     </div>`;
 }
 
-function renderCampaignsView() {
+function renderCampaigns() {
   const curr=agg(S.allInsights), prev=agg(S.prevInsights);
   return `
-    <div class="period-label-badge">📅 ${periodLabel()}</div>
+    <div class="period-badge">📅 ${periodLabel()}</div>
     ${renderKPIs(curr,prev)}
     <div class="card">
-      <div class="card-header"><span class="card-title">TODAS AS CAMPANHAS</span><span class="card-meta">${S.allInsights.length} com dados</span></div>
+      <div class="card-header">
+        <span class="card-title">TODAS AS CAMPANHAS</span>
+        <span class="card-meta">${S.allInsights.length} com dados</span>
+      </div>
       ${renderCampaignTable(false)}
     </div>`;
 }
 
-function renderAdsView() {
-  if (!S.selectedCampaign) return `
-    <p style="color:var(--text2);font-size:13px;font-weight:600;margin-bottom:12px">Selecione uma campanha para ver os criativos:</p>
-    <div class="card"><div class="card-header"><span class="card-title">CAMPANHAS</span></div>${renderCampaignTable(false)}</div>`;
+function renderAds() {
+  if(!S.selCamp) return `
+    <p style="color:var(--t1);font-size:13px;font-weight:600;margin-bottom:12px">Selecione uma campanha para ver os criativos:</p>
+    <div class="card">
+      <div class="card-header"><span class="card-title">CAMPANHAS</span></div>
+      ${renderCampaignTable(false)}
+    </div>`;
   return renderCampaignDetail();
 }
 
 function renderCampaignDetail() {
-  const obj=S.selectedCampaignObjective||'';
+  const type=objType(S.selCampObj||'');
+  const mainLabel=objMainLabel(type);
   return `<div class="card">
     <div class="card-header">
-      <span class="card-title">CRIATIVOS · ${esc(S.selectedCampaignName||'')}</span>
-      <span class="card-meta">${S.ads.length} anúncios · ranking por ${getResultLabel(obj)}</span>
+      <span class="card-title">CRIATIVOS · ${esc(S.selCampName||'')}</span>
+      <span class="card-meta">${S.ads.length} anúncios · ranking por ${mainLabel}</span>
     </div>
     ${renderAdGrid()}
   </div>`;
 }
 
+/* ══════════════════════════════════════════════
+   KPI ROW
+══════════════════════════════════════════════ */
 function renderKPIs(curr,prev) {
+  const totalLeads  = S.allInsights.reduce((s,ins)=>{
+    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+    const t=objType(camp.objective||'');
+    return s+(t==='captacao'?getMainResult(ins,'captacao'):0);
+  },0);
+  const totalVendas = S.allInsights.reduce((s,ins)=>{
+    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+    const t=objType(camp.objective||'');
+    return s+(t==='vendas'?getMainResult(ins,'vendas'):0);
+  },0);
+  const prevLeads = S.prevInsights.reduce((s,ins)=>{
+    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+    const t=objType(camp.objective||'');
+    return s+(t==='captacao'?getMainResult(ins,'captacao'):0);
+  },0);
+
   const kpis=[
-    {icon:'💸',label:'Gasto Total',   val:fmtR(curr.spend),           sub:`${S.allInsights.length} camp. ativas`, d:deltaHTML(curr.spend,prev.spend)},
-    {icon:'👁', label:'Impressões',   val:fmtNShort(curr.impressions), sub:`CPM: ${fmtR(curr.cpm)}`,              d:deltaHTML(curr.impressions,prev.impressions)},
-    {icon:'🖱', label:'Cliques',      val:fmtNShort(curr.clicks),      sub:`CTR: ${curr.ctr.toFixed(2)}%`,        d:deltaHTML(curr.clicks,prev.clicks)},
-    {icon:'📡', label:'Alcance',      val:fmtNShort(curr.reach),       sub:`Freq: ${curr.frequency.toFixed(2)}`,  d:deltaHTML(curr.reach,prev.reach)},
-    {icon:'💰', label:'CPC Médio',    val:fmtR(curr.cpc),              sub:'por clique',                          d:deltaHTML(curr.cpc,prev.cpc,true)},
-    {icon:'🎯', label:'Resultados',   val:fmtNShort(curr.results),     sub:curr.results>0?`CPR: ${fmtR(curr.spend/curr.results)}`:'—', d:deltaHTML(curr.results,prev.results)},
+    {icon:'💸', label:'Investimento',  val:fmtR(curr.spend),           sub:`${S.allInsights.length} campanhas`, d:deltaHTML(curr.spend,prev.spend)},
+    {icon:'🎯', label:'Leads',         val:fmtK(totalLeads),            sub:`CPL: ${totalLeads>0?fmtR(S.allInsights.filter(i=>{const c=S.campaigns.find(x=>x.id===i.campaign_id)||{};return objType(c.objective||'')==='captacao'}).reduce((s,i)=>s+parseFloat(i.spend||0),0)/totalLeads):'—'}`, d:deltaHTML(totalLeads,prevLeads)},
+    {icon:'🛒', label:'Compras',       val:fmtK(totalVendas),           sub:`CPA: ${totalVendas>0?fmtR(S.allInsights.filter(i=>{const c=S.campaigns.find(x=>x.id===i.campaign_id)||{};return objType(c.objective||'')==='vendas'}).reduce((s,i)=>s+parseFloat(i.spend||0),0)/totalVendas):'—'}`, d:''},
+    {icon:'👁',  label:'Impressões',   val:fmtK(curr.impressions),      sub:`CPM: ${fmtR(curr.cpm)}`, d:deltaHTML(curr.impressions,prev.impressions)},
+    {icon:'🖱',  label:'Cliques',      val:fmtK(curr.clicks),           sub:`CTR: ${curr.ctr.toFixed(2)}%`, d:deltaHTML(curr.clicks,prev.clicks)},
+    {icon:'📡',  label:'Alcance',      val:fmtK(curr.reach),            sub:`Freq: ${curr.frequency.toFixed(2)}`, d:deltaHTML(curr.reach,prev.reach)},
   ];
   return `<div class="kpi-row">${kpis.map((k,i)=>`
-    <div class="kpi" style="animation-delay:${i*0.04}s">
-      <div class="kpi-icon">${k.icon}</div>
-      <div class="kpi-label">${k.label}</div>
+    <div class="kpi" style="animation-delay:${i*.04}s">
+      <div class="kpi-hd"><span class="kpi-label">${k.label}</span><span class="kpi-icon">${k.icon}</span></div>
       <div class="kpi-val">${k.val}</div>
-      <div class="kpi-sub">${k.sub}</div>
-      ${k.d||''}
+      <div class="kpi-foot"><span class="kpi-sub">${k.sub}</span>${k.d||''}</div>
     </div>`).join('')}</div>`;
 }
 
+/* ══════════════════════════════════════════════
+   OBJETIVO BLOCKS
+══════════════════════════════════════════════ */
+function renderObjBlocks() {
+  // Agrupa insighsts por tipo de objetivo
+  const groups = {};
+  S.allInsights.forEach(ins=>{
+    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+    const t=objType(camp.objective||'');
+    if(!groups[t]) groups[t]={'spend':0,'results':0,'camps':0,'ctr':0,'cpc':0,'n':0};
+    const g=groups[t];
+    g.spend+=parseFloat(ins.spend||0);
+    g.results+=getMainResult(ins,t);
+    g.ctr+=parseFloat(ins.ctr||0);
+    g.cpc+=parseFloat(ins.cpc||0);
+    g.camps++; g.n++;
+  });
+
+  const order=['captacao','vendas','engaj','trafego','outros'];
+  const active=order.filter(t=>groups[t]);
+  if(!active.length) return '';
+
+  return `<div class="obj-blocks">${active.map((t,i)=>{
+    const g=groups[t];
+    const mainLabel=objMainLabel(t);
+    const costLabel=objCostLabel(t);
+    const cost=g.results>0?g.spend/g.results:0;
+    const avgCTR=g.n?g.ctr/g.n:0;
+    return `<div class="obj-block" data-obj="${t}" style="animation-delay:${i*.04}s">
+      <div class="obj-type">
+        <div class="obj-dot" style="background:${objColor(t)}"></div>
+        <span class="obj-type-label">${objLabel(t)}</span>
+      </div>
+      <div class="obj-invest">${fmtR(g.spend)}</div>
+      <div class="obj-main-row">
+        <span class="obj-main-val">${fmtK(g.results)}</span>
+        <span class="obj-main-label">${mainLabel}</span>
+      </div>
+      <div class="obj-metrics">
+        <div class="obj-m">
+          <div class="obj-m-l">${costLabel}</div>
+          <div class="obj-m-v">${cost>0?fmtR(cost):'—'}</div>
+        </div>
+        <div class="obj-m">
+          <div class="obj-m-l">CTR Méd.</div>
+          <div class="obj-m-v">${avgCTR.toFixed(2)}%</div>
+        </div>
+        <div class="obj-m">
+          <div class="obj-m-l">Camps.</div>
+          <div class="obj-m-v">${g.camps}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+/* ══════════════════════════════════════════════
+   PIE CHART (SVG manual)
+══════════════════════════════════════════════ */
+function renderPieChart() {
+  const groups={};
+  S.allInsights.forEach(ins=>{
+    const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
+    const t=objType(camp.objective||'');
+    groups[t]=(groups[t]||0)+parseFloat(ins.spend||0);
+  });
+
+  const order=['captacao','vendas','engaj','trafego','outros'];
+  const items=order.filter(t=>groups[t]>0).map(t=>({t,v:groups[t]}));
+  if(!items.length) return '<div class="state"><div class="state-sub">Sem dados</div></div>';
+
+  const total=items.reduce((s,i)=>s+i.v,0);
+  if(total===0) return '<div class="state"><div class="state-sub">Sem dados</div></div>';
+
+  // Build SVG pie
+  const cx=70, cy=70, r=60, ri=36;
+  let html='';
+  let angle=-Math.PI/2; // começa no topo
+
+  items.forEach(item=>{
+    const pct=item.v/total;
+    const a=pct*2*Math.PI;
+    const x1=cx+r*Math.cos(angle), y1=cy+r*Math.sin(angle);
+    const x2=cx+r*Math.cos(angle+a), y2=cy+r*Math.sin(angle+a);
+    const xi1=cx+ri*Math.cos(angle), yi1=cy+ri*Math.sin(angle);
+    const xi2=cx+ri*Math.cos(angle+a), yi2=cy+ri*Math.sin(angle+a);
+    const large=a>Math.PI?1:0;
+    const color=objColor(item.t);
+    html+=`<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2} L${xi2} ${yi2} A${ri} ${ri} 0 ${large} 0 ${xi1} ${yi1}" fill="${color}" opacity=".9"/>`;
+    angle+=a;
+  });
+
+  // Center label
+  html+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" fill="#f0f2f8" font-size="11" font-family="DM Mono,monospace" font-weight="500">${fmtR(total).replace('R$ ','')}</text>`;
+  html+=`<text x="${cx}" y="${cy+12}" text-anchor="middle" fill="#4a5568" font-size="9" font-family="Outfit,sans-serif" letter-spacing="1">TOTAL</text>`;
+
+  const svgPie=`<svg class="pie-svg" viewBox="0 0 140 140" width="140" height="140" xmlns="http://www.w3.org/2000/svg">${html}</svg>`;
+
+  const legend=items.map(item=>`
+    <div class="pie-leg-row">
+      <div class="pie-leg-left">
+        <div class="pie-leg-dot" style="background:${objColor(item.t)}"></div>
+        <span class="pie-leg-name">${objLabel(item.t)}</span>
+      </div>
+      <div class="pie-leg-right">
+        <span class="pie-leg-val">${fmtR(item.v)}</span>
+        <span class="pie-leg-pct">${(item.v/total*100).toFixed(1)}%</span>
+      </div>
+    </div>`).join('');
+
+  return `<div class="pie-wrap">${svgPie}<div class="pie-legend">${legend}</div></div>`;
+}
+
+/* ══════════════════════════════════════════════
+   LINE CHART
+══════════════════════════════════════════════ */
 function renderLineChart() {
   const data=S.daily;
-  if (!data.length) return '<div class="state"><div class="state-sub">Sem dados diários</div></div>';
+  if(!data.length) return '<div class="state"><div class="state-sub">Sem dados diários</div></div>';
   const metric=S.chartMetric;
   const vals=data.map(d=>{
     if(metric==='spend') return parseFloat(d.spend||0);
@@ -568,38 +1108,38 @@ function renderLineChart() {
     if(metric==='ctr') return parseFloat(d.ctr||0);
     return 0;
   });
-  const W=600,H=160,P={top:12,right:12,bottom:28,left:52};
-  const cW=W-P.left-P.right,cH=H-P.top-P.bottom;
+  const W=600,H=160,P={top:12,right:12,bottom:28,left:54};
+  const cW=W-P.left-P.right, cH=H-P.top-P.bottom;
   const maxV=Math.max(...vals)||1, minV=Math.min(...vals);
   const xStep=cW/Math.max(vals.length-1,1);
-  const yScale=v=>cH-((v-minV)/(maxV-minV||1))*cH;
-  const pts=vals.map((v,i)=>`${P.left+i*xStep},${P.top+yScale(v)}`);
+  const yS=v=>cH-((v-minV)/(maxV-minV||1))*cH;
+  const pts=vals.map((v,i)=>`${P.left+i*xStep},${P.top+yS(v)}`);
   const area=`${P.left},${P.top+cH} ${pts.join(' ')} ${P.left+(vals.length-1)*xStep},${P.top+cH}`;
-  const yTicks=[0,.33,.66,1].map(t=>{
+  const ticks=[0,.33,.66,1].map(t=>{
     const v=minV+(maxV-minV)*t, y=P.top+cH-t*cH;
-    const lb=metric==='spend'?fmtR(v):metric==='ctr'?v.toFixed(2)+'%':fmtNShort(v);
-    return `<text x="${P.left-6}" y="${y+4}" text-anchor="end" fill="#444" font-size="9" font-family="DM Mono,monospace">${lb}</text>
-      <line x1="${P.left}" y1="${y}" x2="${P.left+cW}" y2="${y}" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>`;
+    const lb=metric==='spend'?fmtR(v):metric==='ctr'?v.toFixed(2)+'%':fmtK(v);
+    return `<text x="${P.left-6}" y="${y+4}" text-anchor="end" fill="#4a5568" font-size="9" font-family="DM Mono,monospace">${lb}</text>
+      <line x1="${P.left}" y1="${y}" x2="${P.left+cW}" y2="${y}" stroke="rgba(255,255,255,.04)" stroke-width="1"/>`;
   }).join('');
   const step=Math.max(1,Math.floor(data.length/6));
-  const xLabels=data.map((d,i)=>i%step!==0&&i!==data.length-1?'':
-    `<text x="${P.left+i*xStep}" y="${H-2}" text-anchor="middle" fill="#444" font-size="9">${d.date_start.slice(5)}</text>`).join('');
-  const dots=pts.map((p,i)=>{const[px,py]=p.split(',');return`<circle cx="${px}" cy="${py}" r="${i===vals.length-1?4:2}" fill="${i===vals.length-1?'#ff7240':'#E8500A'}" stroke="rgba(0,0,0,0.4)" stroke-width="1.5" opacity="${i===vals.length-1?1:0.75}"/>`;}).join('');
+  const xLbls=data.map((d,i)=>i%step!==0&&i!==data.length-1?'':
+    `<text x="${P.left+i*xStep}" y="${H-2}" text-anchor="middle" fill="#4a5568" font-size="9">${d.date_start.slice(5)}</text>`).join('');
+  const dots=pts.map((p,i)=>{const[px,py]=p.split(',');return`<circle cx="${px}" cy="${py}" r="${i===vals.length-1?4:2}" fill="${i===vals.length-1?'#ff8050':'#E8500A'}" stroke="rgba(0,0,0,.4)" stroke-width="1.5" opacity="${i===vals.length-1?1:.75}"/>`;}).join('');
   return `<svg viewBox="0 0 ${W} ${H}" class="chart-area" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
     <defs>
       <linearGradient id="aG" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#E8500A" stop-opacity="0.12"/>
+        <stop offset="0%" stop-color="#E8500A" stop-opacity=".12"/>
         <stop offset="100%" stop-color="#E8500A" stop-opacity="0"/>
       </linearGradient>
-      <linearGradient id="lineG" x1="0" y1="0" x2="1" y2="0">
+      <linearGradient id="lG" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stop-color="#E8500A"/>
-        <stop offset="100%" stop-color="#ff7240"/>
+        <stop offset="100%" stop-color="#ff8050"/>
       </linearGradient>
     </defs>
-    ${yTicks}
+    ${ticks}
     <polygon points="${area}" fill="url(#aG)"/>
-    <polyline points="${pts.join(' ')}" fill="none" stroke="url(#lineG)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-    ${dots}${xLabels}
+    <polyline points="${pts.join(' ')}" fill="none" stroke="url(#lG)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}${xLbls}
   </svg>`;
 }
 
@@ -609,20 +1149,22 @@ function bindChartTabs() {
       document.querySelectorAll('.metric-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       S.chartMetric=btn.dataset.metric;
-      const wrap=document.querySelector('.chart-wrap');
-      if(wrap) wrap.innerHTML=renderLineChart();
-      bindChartTabs();
+      const w=document.querySelector('.chart-wrap');
+      if(w){w.innerHTML=renderLineChart(); bindChartTabs();}
     });
   });
 }
 
+/* ══════════════════════════════════════════════
+   BAR CHART (gasto por campanha)
+══════════════════════════════════════════════ */
 function renderBarChart() {
   const sorted=[...S.allInsights].sort((a,b)=>parseFloat(b.spend||0)-parseFloat(a.spend||0)).slice(0,8);
   if(!sorted.length) return '<div class="state"><div class="state-sub">Sem dados</div></div>';
   const max=parseFloat(sorted[0].spend||1);
   return `<div class="bars">${sorted.map(ins=>`
     <div class="bar-row">
-      <span class="bar-label" title="${esc(ins.campaign_name)}">${esc(ins.campaign_name)}</span>
+      <span class="bar-lbl" title="${esc(ins.campaign_name)}">${esc(ins.campaign_name)}</span>
       <div class="bar-track"><div class="bar-fill" data-pct="${(parseFloat(ins.spend||0)/max*100).toFixed(1)}" style="width:0%"></div></div>
       <span class="bar-val">${fmtR(ins.spend)}</span>
     </div>`).join('')}</div>`;
@@ -634,124 +1176,140 @@ function animateBars() {
   },80);
 }
 
+/* ══════════════════════════════════════════════
+   CAMPAIGN TABLE
+══════════════════════════════════════════════ */
 function renderCampaignTable(compact=false) {
   const rows=S.allInsights.map(ins=>{
     const camp=S.campaigns.find(c=>c.id===ins.campaign_id)||{};
     return {...camp,ins};
   });
+
   const sorted=[...rows].sort((a,b)=>{
     let va,vb;
     if(S.sortCol==='results'){
-      va=getResultsFromIns(a.ins||{},a.objective||'');
-      vb=getResultsFromIns(b.ins||{},b.objective||'');
+      const ta=objType(a.objective||''), tb=objType(b.objective||'');
+      va=getMainResult(a.ins||{},ta); vb=getMainResult(b.ins||{},tb);
     } else {
-      va=parseFloat(a.ins?.[S.sortCol]||0);
-      vb=parseFloat(b.ins?.[S.sortCol]||0);
+      va=parseFloat(a.ins?.[S.sortCol]||0); vb=parseFloat(b.ins?.[S.sortCol]||0);
     }
     return S.sortDir==='desc'?vb-va:va-vb;
   });
+
   const display=compact?sorted.slice(0,8):sorted;
   if(!display.length) return '<div class="state"><div class="state-icon">◌</div><div class="state-sub">Nenhuma campanha com dados no período</div></div>';
 
   const cols=[
-    {key:'name',label:'Campanha',sort:false},
-    {key:'status',label:'Status',sort:false},
-    {key:'spend',label:'Gasto',sort:true},
+    {key:'name',     label:'Campanha',   sort:false},
+    {key:'obj',      label:'Objetivo',   sort:false},
+    {key:'status',   label:'Status',     sort:false},
+    {key:'spend',    label:'Gasto',      sort:true},
     {key:'impressions',label:'Impressões',sort:true},
-    {key:'clicks',label:'Cliques',sort:true},
-    {key:'ctr',label:'CTR',sort:true},
-    {key:'cpc',label:'CPC',sort:true},
-    {key:'cpm',label:'CPM',sort:true},
-    {key:'reach',label:'Alcance',sort:true},
-    {key:'results',label:'Resultado',sort:true},
-    {key:'action',label:'',sort:false},
+    {key:'clicks',   label:'Cliques',    sort:true},
+    {key:'ctr',      label:'CTR',        sort:true},
+    {key:'cpc',      label:'CPC',        sort:true},
+    {key:'results',  label:'Resultado',  sort:true},
+    {key:'action',   label:'',           sort:false},
   ];
+
   const ths=cols.map(c=>`<th class="${S.sortCol===c.key?'sorted':''}" ${c.sort?`onclick="sortTable('${c.key}')"`:''}>${c.label}${c.sort?`<span class="sort-icon">${S.sortCol===c.key?(S.sortDir==='desc'?'↓':'↑'):'↕'}</span>`:''}</th>`).join('');
 
   const tds=display.map(row=>{
     const ins=row.ins||{};
-    const prevIns=S.prevCampaignInsights[row.id||ins.campaign_id]||{};
-    const status=row.status||'UNKNOWN';
-    const obj=row.objective||'';
+    const prevIns=S.prevCampMap[row.id||ins.campaign_id]||{};
+    const type=objType(row.objective||'');
     const name=ins.campaign_name||row.name||'—';
-    const resultLabel=getResultLabel(obj);
-    const results=getResultsFromIns(ins,obj);
-    const objBadge=fmtObj(obj);
+    const results=getMainResult(ins,type);
+    const mainLabel=objMainLabel(type);
+    const costLabel=objCostLabel(type);
+    const cost=results>0?parseFloat(ins.spend||0)/results:0;
     const d=delta(parseFloat(ins.spend||0),parseFloat(prevIns.spend||0));
-    const badge=d!==null?`<span class="kpi-delta ${Math.abs(d)<0.5?'delta-flat':d>0?'delta-up':'delta-down'}" style="font-size:9px;padding:1px 5px;margin-left:4px">${d>0?'+':''}${d.toFixed(1)}%</span>`:'';
+    const badge=d!==null?`<span class="delta ${Math.abs(d)<.5?'delta-flat':d>0?'delta-up':'delta-dn'}" style="font-size:9px;padding:1px 5px;margin-left:4px">${d>0?'+':''}${d.toFixed(1)}%</span>`:'';
+    const objBadge=fmtObjBadge(row.objective||'');
     return `<tr>
-      <td><div class="name-cell" title="${esc(name)}">${esc(name)}${objBadge?` <span class="pill pill-blue" style="margin-left:4px">${objBadge}</span>`:''}</div></td>
-      <td><span class="pill ${statusPill(status)}">${fmtStatus(status)}</span></td>
+      <td><div class="name-cell" title="${esc(name)}">${esc(name)}</div></td>
+      <td>${objBadge?`<span class="obj-pill ${objPillClass(type)}">${objBadge}</span>`:'<span style="color:var(--t2)">—</span>'}</td>
+      <td><span class="pill ${statusPill(row.status)}">${fmtStatus(row.status)}</span></td>
       <td class="mono">${fmtR(ins.spend)}${badge}</td>
       <td class="mono">${fmtN(ins.impressions)}</td>
       <td class="mono">${fmtN(ins.clicks)}</td>
       <td class="mono">${parseFloat(ins.ctr||0).toFixed(2)}%</td>
       <td class="mono">${fmtR(ins.cpc)}</td>
-      <td class="mono">${fmtR(ins.cpm)}</td>
-      <td class="mono">${fmtN(ins.reach)}</td>
-      <td class="mono">${results>0?`<strong>${fmtN(results)}</strong> <span style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">${resultLabel}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
-      <td><button class="drill" onclick="drillCampaign('${row.id||ins.campaign_id}','${esc(name).replace(/'/g,"\\'")}','${(obj).replace(/'/g,"\\'")}')">Criativos →</button></td>
+      <td class="mono">
+        ${results>0
+          ?`<strong>${fmtN(results)}</strong> <span style="font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.4px">${mainLabel}</span>${cost>0?`<span class="mono" style="font-size:10px;color:var(--t2);margin-left:4px">${costLabel}: ${fmtR(cost)}</span>`:''}`
+          :'<span style="color:var(--t2)">—</span>'}
+      </td>
+      <td><button class="drill" onclick="drillCamp('${row.id||ins.campaign_id}','${esc(name).replace(/'/g,"\\'")}','${(row.objective||'').replace(/'/g,"\\'")}')">Ver criativos →</button></td>
     </tr>`;
   }).join('');
 
   return `<div class="table-wrap"><table><thead><tr>${ths}</tr></thead><tbody>${tds}</tbody></table></div>`;
 }
 
-// AD GRID — ordenado por leads/vendas, imagens via CSS background-image (bypassa adblockers que bloqueiam <img> com src fbcdn.net)
+/* ══════════════════════════════════════════════
+   AD GRID
+══════════════════════════════════════════════ */
 function renderAdGrid() {
-  const obj=S.selectedCampaignObjective||'';
-  const resultLabel=getResultLabel(obj);
+  const type=objType(S.selCampObj||'');
+  const mainLabel=objMainLabel(type);
 
   const sorted=[...S.ads].sort((a,b)=>{
-    const ra=getResultsFromIns(S.adInsights[a.id]||{},obj);
-    const rb=getResultsFromIns(S.adInsights[b.id]||{},obj);
+    const ra=getMainResult(S.adInsights[a.id]||{},type);
+    const rb=getMainResult(S.adInsights[b.id]||{},type);
     if(rb!==ra) return rb-ra;
     return parseInt(S.adInsights[b.id]?.clicks||0)-parseInt(S.adInsights[a.id]?.clicks||0);
   });
 
   if(!sorted.length) return '<div class="state"><div class="state-icon">◌</div><div class="state-sub">Nenhum anúncio encontrado</div></div>';
 
+  // Calcular mediana de CTR para badge
+  const ctrs=sorted.map(ad=>parseFloat(S.adInsights[ad.id]?.ctr||0)).filter(v=>v>0);
+  const medianCTR=ctrs.length?ctrs.sort((a,b)=>a-b)[Math.floor(ctrs.length/2)]:0;
+  const maxResults=sorted.length>0?getMainResult(S.adInsights[sorted[0].id]||{},type):0;
+
   return `<div class="ad-grid">${sorted.map((ad,i)=>{
     const ins=S.adInsights[ad.id]||{};
-    const results=getResultsFromIns(ins,obj);
-    const ctr=parseFloat(ins.ctr||0).toFixed(2);
+    const results=getMainResult(ins,type);
+    const ctr=parseFloat(ins.ctr||0);
+    const spend=parseFloat(ins.spend||0);
 
-    // Tenta múltiplos campos para thumbnail — prioriza imagem maior
-    const thumbUrl=
-      ad.creative?.image_url||
-      ad.creative?.thumbnail_url||
-      ad.creative?.object_story_spec?.video_data?.image_url||
-      ad.creative?.object_story_spec?.link_data?.picture||
-      null;
+    // Badge logic
+    let badgeHtml='';
+    if(i===0&&maxResults>0)  badgeHtml=`<div class="ad-badge champion">🏆 Campeão</div>`;
+    else if(results>0&&ctr>medianCTR*1.3) badgeHtml=`<div class="ad-badge scale">↑ Escalar</div>`;
+    else if(spend>0&&results===0)         badgeHtml=`<div class="ad-badge watch">⚠ Monitorar</div>`;
+    else if(i<3)                          badgeHtml=`<div class="ad-badge rank">#${i+1}</div>`;
 
-    // background-image via style inline bypassa bloqueio de adblockers em <img src>
+    // Thumbnail via background-image (bypassa adblocker)
+    const thumbUrl=ad.creative?.image_url||ad.creative?.thumbnail_url||ad.creative?.object_story_spec?.video_data?.image_url||ad.creative?.object_story_spec?.link_data?.picture||null;
     const thumbHtml=thumbUrl
       ?`<div class="ad-thumb-bg" style="background-image:url('${thumbUrl}')"></div>`
       :`<div class="ad-thumb-empty">🎨<span>Sem preview</span></div>`;
 
-    const rankLabel=i===0?`🥇 #1 ${resultLabel}`:i===1?`🥈 #2`:i===2?`🥉 #3`:null;
+    const cost=results>0?spend/results:0;
 
-    return `<div class="ad-card" style="animation-delay:${i*0.04}s">
-      ${rankLabel?`<div class="ad-rank">${rankLabel}</div>`:''}
+    return `<div class="ad-card" style="animation-delay:${i*.04}s">
+      ${badgeHtml}
       <div class="ad-thumb">${thumbHtml}</div>
       <div class="ad-info">
         <div class="ad-name" title="${esc(ad.name)}">${esc(ad.name)}</div>
         <div class="ad-stats">
-          <div class="ad-stat primary">
-            <div class="ad-stat-label">${resultLabel}</div>
-            <div class="ad-stat-val">${results>0?fmtN(results):'—'}</div>
+          <div class="ad-stat hi">
+            <div class="ad-stat-l">${mainLabel}</div>
+            <div class="ad-stat-v">${results>0?fmtN(results):'—'}</div>
           </div>
           <div class="ad-stat">
-            <div class="ad-stat-label">Gasto</div>
-            <div class="ad-stat-val">${fmtR(ins.spend)}</div>
+            <div class="ad-stat-l">Gasto</div>
+            <div class="ad-stat-v">${fmtR(ins.spend)}</div>
           </div>
           <div class="ad-stat">
-            <div class="ad-stat-label">Cliques</div>
-            <div class="ad-stat-val">${fmtN(ins.clicks)}</div>
+            <div class="ad-stat-l">${objCostLabel(type)}</div>
+            <div class="ad-stat-v">${cost>0?fmtR(cost):'—'}</div>
           </div>
           <div class="ad-stat">
-            <div class="ad-stat-label">CTR</div>
-            <div class="ad-stat-val">${ctr}%</div>
+            <div class="ad-stat-l">CTR</div>
+            <div class="ad-stat-v">${ctr.toFixed(2)}%</div>
           </div>
         </div>
       </div>
@@ -759,8 +1317,11 @@ function renderAdGrid() {
   }).join('')}</div>`;
 }
 
-function drillCampaign(id,name,objective) {
-  S.selectedCampaign=id; S.selectedCampaignName=name; S.selectedCampaignObjective=objective;
+/* ══════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════ */
+function drillCamp(id,name,objective) {
+  S.selCamp=id; S.selCampName=name; S.selCampObj=objective;
   S.view='campaign-detail';
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('nav-ads').classList.add('active');
@@ -774,11 +1335,11 @@ function sortTable(col) {
 
 function updateBreadcrumb() {
   const el=document.getElementById('breadcrumb');
-  const labels={overview:'Visão Geral',campaigns:'Campanhas',ads:'Criativos'};
+  const lbl={overview:'Visão Geral',campaigns:'Campanhas',ads:'Criativos'};
   if(S.view==='campaign-detail') {
-    el.innerHTML=`<span class="bc-item" onclick="setView('campaigns')">Campanhas</span><span class="bc-sep">›</span><span class="bc-item active">${esc(S.selectedCampaignName||'')}</span>`;
+    el.innerHTML=`<span class="bc" onclick="setView('campaigns')">Campanhas</span><span class="bc-sep">›</span><span class="bc cur">${esc(S.selCampName||'')}</span>`;
   } else {
-    el.innerHTML=`<span class="bc-item active">${labels[S.view]||''}</span>`;
+    el.innerHTML=`<span class="bc cur">${lbl[S.view]||''}</span>`;
   }
 }
 
@@ -787,20 +1348,30 @@ function updateLastUpdate() {
 }
 
 function showLoading() {
-  document.getElementById('page-content').innerHTML='<div class="state"><div class="spinner"></div><div class="state-sub">Carregando...</div></div>';
+  document.getElementById('page').innerHTML='<div class="state"><div class="spinner"></div><div class="state-sub">Carregando...</div></div>';
+}
+
+function showSkeleton() {
+  document.getElementById('page').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px">
+      ${Array(6).fill('<div class="skel skel-kpi"></div>').join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+      ${Array(4).fill('<div class="skel" style="height:140px;border-radius:14px"></div>').join('')}
+    </div>
+    <div class="skel skel-card" style="height:300px"></div>`;
 }
 
 function showError(msg) {
-  document.getElementById('page-content').innerHTML=`<div class="error-bar">⚠ ${esc(msg)}</div>`;
+  document.getElementById('page').innerHTML=`<div class="err-bar">⚠ ${esc(msg)}</div>`;
 }
 
-function fmtR(v){v=parseFloat(v||0);if(isNaN(v))return'—';return'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function fmtN(v){v=parseInt(v||0);if(isNaN(v))return'—';return v.toLocaleString('pt-BR')}
-function fmtNShort(v){if(v>=1e6)return(v/1e6).toFixed(1)+'M';if(v>=1e3)return(v/1e3).toFixed(1)+'K';return Math.round(v).toString()}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function statusPill(s){return{ACTIVE:'pill-green',PAUSED:'pill-yellow',ARCHIVED:'pill-gray',DELETED:'pill-red'}[s?.toUpperCase()]||'pill-gray'}
-function fmtStatus(s){return{ACTIVE:'Ativo',PAUSED:'Pausado',ARCHIVED:'Arquivado',DELETED:'Deletado'}[s?.toUpperCase()]||s}
-function fmtObj(obj){return{OUTCOME_TRAFFIC:'Tráfego',OUTCOME_LEADS:'Leads',OUTCOME_SALES:'Vendas',OUTCOME_AWARENESS:'Alcance',OUTCOME_ENGAGEMENT:'Engaj.',LINK_CLICKS:'Tráfego',LEAD_GENERATION:'Leads',CONVERSIONS:'Conversões',REACH:'Alcance'}[obj]||''}
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.getElementById('splash').classList.add('out'),2200);
+});
 
 document.addEventListener('DOMContentLoaded',()=>{
   loadAll();
